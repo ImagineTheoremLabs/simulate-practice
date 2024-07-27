@@ -1,0 +1,35 @@
+{
+    "title": "Retirement Readiness",
+    "subtitle": "Simulator for Advisor Training",
+    "welcome": "Welcome to the Retirement Conversation Simulation Tool",
+    "intro": "**Empower Your Advisory Skills** Prepare to guide your clients toward a secure and comfortable retirement with our interactive simulator. This tool is designed to enhance your understanding and application of retirement planning strategies.",
+    "key_features": {
+      "title": "Key Features:",
+      "items": [
+        "**Client Persona Simulations:** Engage with realistic client profiles to practice and refine your advisory techniques.",
+        "**Scenario-Based Learning:** Navigate through various retirement planning scenarios tailored to different client needs and goals.",
+        "**Real-Time Feedback:** Receive instant feedback on your decisions to improve your advisory skills.",
+        "**Advanced Analytics:** Track your progress and identify areas for improvement with detailed performance analytics."
+      ]
+    },
+    "value": {
+      "title": "Value:",
+      "items": [
+        "**Enhance Client Satisfaction:** Improve your ability to deliver personalized, effective retirement advice that meets your clients' unique needs and goals.",
+        "**Boost Professional Confidence:** Gain confidence in your advisory skills by practicing in a risk-free environment with varied client scenarios.",
+        "**Stay Competitive:** Stay ahead in the competitive advisory landscape by continuously updating your knowledge and skills.",
+        "**Drive Better Outcomes:** Help your clients achieve their retirement dreams by utilizing the latest strategies and tools.",
+        "**Build Strong Relationships:** Develop stronger relationships with your clients by understanding their concerns and providing tailored solutions.",
+        "**Earn More Referrals:** Satisfied clients are more likely to refer their friends and family, helping you grow your practice."
+      ]
+    },
+    "why_choose": {
+      "title": "Why Choose Our Simulator?",
+      "items": [
+        "**Realistic Training Environment:** Simulate real-world advisory sessions with diverse client scenarios.",
+        "**Continuous Learning:** Stay updated with the latest retirement planning strategies and best practices.",
+        "**Flexible and Convenient:** Train at your own pace and revisit modules as needed."
+      ]
+    },
+    "button_text": "Let's Get Started!"
+  }

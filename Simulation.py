@@ -1,7 +1,11 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import sqlite3
+import json
 
+# Load content from JSON file
+with open('home_content.json', 'r') as f:
+    home_content = json.load(f)
 
 # Database setup
 conn = sqlite3.connect('responses.db')
@@ -12,13 +16,32 @@ c.execute('''CREATE TABLE IF NOT EXISTS responses
              (mcq1 TEXT, mcq2 TEXT, mcq3 TEXT, txt1 TEXT, txt2 TEXT)''')
 conn.commit()
 
+# Initialize session state
+if 'page' not in st.session_state:
+    st.session_state.page = 'Home'
 
 # Define a function for each page
 def home():
-    st.title("Retirement Readiness")
-    st.write("Welcome to the home page!")
-
-
+    st.title(home_content["title"])
+    st.subheader(home_content["subtitle"])
+    st.write(home_content["welcome"])
+    st.markdown(home_content["intro"])
+    
+    st.subheader(home_content["key_features"]["title"])
+    for item in home_content["key_features"]["items"]:
+        st.markdown(f"* {item}")
+    
+    st.subheader(home_content["value"]["title"])
+    for item in home_content["value"]["items"]:
+        st.markdown(f"* {item}")
+    
+    st.subheader(home_content["why_choose"]["title"])
+    for item in home_content["why_choose"]["items"]:
+        st.markdown(f"* {item}")
+    
+    if st.button(home_content["button_text"]):
+        Questionnaire()
+        
 
 def Questionnaire():
     st.title("Questionnaire Page")
@@ -53,12 +76,16 @@ with st.sidebar:
         default_index=0,  # optional
     )
 
+# Update session state based on sidebar selection
+if selected != st.session_state.page:
+    st.session_state.page = selected
+
 # Logic to display the selected page
-if selected == "Home":
+if st.session_state.page == "Home":
     home()
-elif selected == "Questionnaire":
+elif st.session_state.page == "Questionnaire":
     Questionnaire()
-elif selected == "Contact":
+elif st.session_state.page == "Contact":
     contact()
 
 # connection close.
