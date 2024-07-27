@@ -8,10 +8,10 @@ import io
 import streamlit.components.v1 as components
 
 # Load content from JSON files
-with open('home_content.json', 'r') as f:
+with open('data/home_content.json', 'r') as f:
     home_content = json.load(f)
 
-with open('client_personas.json', 'r') as f:
+with open('data/client_personas.json', 'r') as f:
     client_personas_data = json.load(f)
 
 # Database setup
