@@ -7,6 +7,8 @@ from PIL import Image
 import io
 import streamlit.components.v1 as components
 
+st.set_page_config(layout="wide")
+
 # Load content from JSON files
 with open('data/home_content.json', 'r') as f:
     home_content = json.load(f)
@@ -83,46 +85,45 @@ def client_personas():
     st.title("Client Personas")
     st.write("Select a client persona to simulate a retirement planning conversation.")
 
-    # Calculate the height of the persona section based on the number of items
+    # Calculate the height of the persona section
     num_personas = len(client_personas_data['personas'])
     rows = (num_personas + 2) // 3  # Calculate number of rows needed for 3 columns
-    base_height = 600  # Adjusted base height for one row
-    additional_height_per_row = 550  # Adjusted additional height for each extra row
-    total_height = base_height + (rows - 1) * additional_height_per_row
+    total_height = rows * 500  # Adjust height per row as needed
 
-    # Create HTML for persona cards with a grid layout
     persona_html = '''
     <style>
-    .persona-grid {
+    .persona-container {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 25px;
-        margin-top: 30px;
+        gap: 50px;
+        padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
     }
     .persona-card {
+        width: 100%;
         text-align: center;
-        border-radius: 12px;
-        padding: 25px;
+        border-radius: 8px;
+        padding: 15px;
         transition: all 0.3s ease;
         background: linear-gradient(145deg, rgba(0, 0, 0, 0.8), rgba(50, 50, 50, 0.8));
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(5px);
         display: flex;
         flex-direction: column;
-        height: 100%;
     }
     .persona-card:hover {
-        transform: translateY(-7px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
         background: linear-gradient(145deg, rgba(0, 0, 0, 1), rgba(50, 50, 50, 1));
     }
     .persona-card .image-container {
         width: 100%;
-        padding-top: 100%; /* Adjusted Aspect Ratio */
+        padding-top: 100%;
         position: relative;
         overflow: hidden;
-        border-radius: 10px;
-        margin-bottom: 18px;
+        border-radius: 8px;
+        margin-bottom: 10px;
     }
     .persona-card .image-container img {
         position: absolute;
@@ -137,36 +138,36 @@ def client_personas():
         transform: scale(1.05);
     }
     .persona-card h3 {
-        margin-top: 12px;
-        margin-bottom: 12px;
+        margin-top: 8px;
+        margin-bottom: 8px;
         font-weight: bold;
         color: white;
-        font-size: 22px;
+        font-size: 16px;
     }
     .persona-card p {
         color: #ecf0f1;
+        font-size: 12px;
+        line-height: 1.3;
+        margin-bottom: 12px;
         flex-grow: 1;
-        font-size: 15px;
-        line-height: 1.5;
-        margin-bottom: 18px;
     }
     .persona-card a {
         display: inline-block;
-        margin-top: auto;
-        padding: 10px 22px;
+        padding: 6px 12px;
         color: white;
         font-weight: bold;
         text-decoration: none;
         border-radius: 50px;
         transition: background-color 0.3s ease;
         background-color: #4F4F4F;
-        font-size: 17px;
+        font-size: 12px;
+        margin-top: auto;
     }
     .persona-card a:hover {
         background-color: #5F5F5F;
     }
     </style>
-    <div class="persona-grid">
+    <div class="persona-container">
     '''
 
     for persona in client_personas_data['personas']:
@@ -186,6 +187,7 @@ def client_personas():
             </div>
             """
 
+    persona_html += '</div>'
     components.html(persona_html, height=total_height)
 
 # Create a sidebar menu
