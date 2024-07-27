@@ -1,0 +1,25 @@
+{
+    "personas": [
+      {
+        "image": "img/passport_like_photo_of_a_person_in_a_suit.jpeg",
+        "name": "Financially Strong and Aware",
+        "description": "Has substantial savings, good financial understanding, and clear retirement goals.",
+        "button_text": "Start Chatting",
+        "button_link": "https://example.com/persona2"
+      },
+      {
+        "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+        "name": "Financially Strong but Unaware",
+        "description": "Has significant assets but lacks knowledge about retirement planning and readiness.",
+        "button_text": "Start Chatting",
+        "button_link": "https://example.com/persona2"
+      },
+      {
+        "image": "img/passport_like_photo_of_a_person_in_a_suit_in_greyish_plane_background.jpeg",
+        "name": "Not Retirement Ready",
+        "description": "Has limited savings and is concerned about retiring comfortably.",
+        "button_text": "Start Chatting",
+        "button_link": "https://example.com/persona2"
+      }
+    ]
+  }
