@@ -1,1 +1,14 @@
 streamlit
+streamlit_option_menu
+sqlite3
+json
+base64
+PIL
+io
+streamlit.components.v1 
+time
+google.generativeai
+google.generativeai.types
+re
+uuid
+base64 
