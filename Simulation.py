@@ -195,7 +195,7 @@ def questionnaire():
             # Add a small delay before changing the page
             time.sleep(2)
             st.session_state.page = "Client"
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.warning("Please answer all questions before submitting.")
 
@@ -583,10 +583,9 @@ def client_personas():
                     st.session_state.chat_id = str(uuid.uuid4())
                     st.session_state.messages = []
                     st.session_state.current_persona = persona
-                    st.experimental_rerun()
+                    st.rerun()
 
     if st.session_state.chat_started and st.session_state.current_persona:
-        # Sidebar for controls
         with st.sidebar:
             st.subheader("Chat Controls")
             st.session_state.show_mentor = st.checkbox("Show Mentor Advice", value=st.session_state.show_mentor)
@@ -595,11 +594,11 @@ def client_personas():
                 st.session_state.messages = []
                 st.session_state.chat_started = False
                 st.session_state.current_persona = None
-                st.experimental_rerun()
+                st.rerun()
             
             if st.button("End Chat", key="end_btn"):
                 st.session_state.chat_ended = True
-                st.experimental_rerun()
+                st.rerun()
         
         # Main chat interface
         st.subheader(f"Chatting with {st.session_state.current_persona['name']}")
@@ -656,7 +655,7 @@ def client_personas():
                 st.session_state.chat_started = False
                 st.session_state.current_persona = None
                 st.session_state.chat_ended = False
-                st.experimental_rerun()
+                st.rerun()
 
     else:
         st.write("Please select a client to start the conversation.")
