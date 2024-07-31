@@ -96,7 +96,7 @@ def home():
     
     if st.button("Go to Questionnaire"):
         st.session_state.page = "Questionnaire"
-        st.experimental_rerun()
+        st.rerun()
 
 def questionnaire():
     st.title("Advisor Questionnaire")
