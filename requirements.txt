@@ -1,5 +1,6 @@
 streamlit
-streamlit_option_menu
+streamlit_option_menu 
+option menu
 sqlite3
 json
 base64
