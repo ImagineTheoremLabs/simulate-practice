@@ -26,9 +26,6 @@ page_icon = Image.open("img/favicon (3).ico")
 # Set page configuration
 st.set_page_config(page_title="Document Detector", page_icon=page_icon, layout="wide", initial_sidebar_state="expanded")
 
-
-
-
 def load_image(image_path):
     try:
         return Image.open(image_path)
@@ -37,7 +34,7 @@ def load_image(image_path):
         return None
 
 # Gemini API setup
-GOOGLE_API_KEY = "AIzaSyBISl51tffaCJeUcMEbm1VsKprcj8JfTTw"  # Replace with your actual API key
+GOOGLE_API_KEY = "AIzaSyCvJIjsOSsyHennTE10ooiogk7PyU_d0Zo"  # Replace with your actual API key
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Load content from JSON files
