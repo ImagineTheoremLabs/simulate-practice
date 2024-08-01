@@ -17,6 +17,18 @@ import io
 
 st.set_page_config(layout="wide")
 
+
+LOGO_PATH = "img/Theoremlabs_logo copy.png"  # Update this path as needed
+
+# Load the page icon
+page_icon = Image.open("img/favicon (3).ico")
+
+# Set page configuration
+st.set_page_config(page_title="Document Detector", page_icon=page_icon, layout="wide", initial_sidebar_state="expanded")
+
+
+
+
 def load_image(image_path):
     try:
         return Image.open(image_path)
@@ -388,19 +400,19 @@ def client_personas():
         {
             "name": "Sarah Johnson",
             "description": "55-year-old Senior Executive at a Tech Company seeking retirement advice.",
-            "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+            "image": "img/Sarah-Johnson.webp",
             "profile": sarah_persona
         },
         {
             "name": "John Miller",
             "description": "50-year-old Business Owner seeking retirement advice.",
-            "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+            "image": "img/John Miller.webp",
             "profile": john_persona
         },
         {
             "name": "Emily Davis",
             "description": "45-year-old Marketing Manager seeking retirement advice.",
-            "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+            "image": "img/Emily-Davis.webp",
             "profile": emily_persona
         }
     ]
