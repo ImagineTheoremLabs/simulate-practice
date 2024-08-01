@@ -24,7 +24,7 @@ LOGO_PATH = "img/Theoremlabs_logo copy.png"  # Update this path as needed
 page_icon = Image.open("img/favicon (3).ico")
 
 # Set page configuration
-st.set_page_config(page_title="Document Detector", page_icon=page_icon, layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Simulated-Practice", page_icon=page_icon, layout="wide", initial_sidebar_state="expanded")
 
 def load_image(image_path):
     try:
