@@ -19,6 +19,54 @@ import io
 
 
 LOGO_PATH = "img/Theoremlabs_logo copy.png"  # Update this path as needed
+if os.path.exists(LOGO_PATH):
+    with open(LOGO_PATH, "rb") as file:
+        contents = file.read()
+    img_str = base64.b64encode(contents).decode("utf-8")
+    img = Image.open(io.BytesIO(base64.b64decode(img_str)))
+    
+    # Calculate new dimensions while maintaining aspect ratio
+    max_width = 550
+    max_height = 220
+    img.thumbnail((max_width, max_height))
+    
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    img_b64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+    # Apply the sidebar logo style
+    st.markdown(
+        f"""
+        <style>
+            [data-testid="stSidebarNav"] {{
+                background-image: url('data:image/png;base64,{img_b64}');
+                background-repeat: no-repeat;
+                background-position: 20px 20px;
+                background-size: auto 160px;
+                padding-top: 140px;
+                background-color: rgba(0, 0, 0, 0);
+            }}
+            [data-testid="stSidebarNav"]::before {{
+                content: "";
+                display: block;
+                height: 140px;
+            }}
+            [data-testid="stSidebarNav"] > ul {{
+                padding-top: 0px;
+            }}
+            .css-17lntkn {{
+                padding-top: 0px !important;
+            }}
+            .css-1544g2n {{
+                padding-top: 0rem;
+            }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+
 
 # Load the page icon
 page_icon = Image.open("img/favicon (3).ico")
