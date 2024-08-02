@@ -14,100 +14,8 @@
 # import base64
 # from PIL import Image
 # import io
-# import os
 
-# # st.set_page_config(layout="wide")
-
-# # Hardcoded CSS styles
-# css = """
-# /* Sidebar width */
-# section[data-testid="stSidebar"] {
-#     width: 338px !important;
-# }
-
-# /* Main content area */
-# .main .block-container {
-#     max-width: 1200px;
-#     padding-top: 1rem;
-#     padding-right: 1rem;
-#     padding-left: 1rem;
-#     padding-bottom: 1rem;
-# }
-
-# /* Text colors */
-# .stText, .stMarkdown, .stTitle, .stSubheader {
-#     color: white;
-# }
-
-# .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
-#     font-weight: bold;
-# }
-
-# /* Sidebar logo */
-# [data-testid="stSidebarNav"] {
-#     background-repeat: no-repeat;
-#     padding-top: 80px;
-#     background-position: 20px 20px;
-# }
-# """
-
-
-
-# LOGO_PATH = "img/Theoremlabs_logo copy.png"  # Update this path as needed
-
-# # Load the page icon
-# page_icon = Image.open("img/favicon (3).ico")
-
-# # Set page configuration
-# st.set_page_config(page_title="Simulated-Practice", page_icon=page_icon, layout="wide", initial_sidebar_state="expanded")
-
-# # Load and display the sidebar logo
-# if os.path.exists(LOGO_PATH):
-#     with open(LOGO_PATH, "rb") as file:
-#         contents = file.read()
-#     img_str = base64.b64encode(contents).decode("utf-8")
-#     img = Image.open(io.BytesIO(base64.b64decode(img_str)))
-    
-#     # Calculate new dimensions while maintaining aspect ratio
-#     max_width = 550
-#     max_height = 220
-#     img.thumbnail((max_width, max_height))
-    
-#     buffer = io.BytesIO()
-#     img.save(buffer, format="PNG")
-#     img_b64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-
-#     # Apply the sidebar logo style
-#     st.markdown(
-#         f"""
-#         <style>
-#             [data-testid="stSidebarNav"] {{
-#                 background-image: url('data:image/png;base64,{img_b64}');
-#                 background-repeat: no-repeat;
-#                 background-position: 20px 20px;
-#                 background-size: auto 160px;
-#                 padding-top: 140px;
-#                 background-color: rgba(0, 0, 0, 0);
-#             }}
-#             [data-testid="stSidebarNav"]::before {{
-#                 content: "";
-#                 display: block;
-#                 height: 140px;
-#             }}
-#             [data-testid="stSidebarNav"] > ul {{
-#                 padding-top: 0px;
-#             }}
-#             .css-17lntkn {{
-#                 padding-top: 0px !important;
-#             }}
-#             .css-1544g2n {{
-#                 padding-top: 0rem;
-#             }}
-#         </style>
-#         """,
-#         unsafe_allow_html=True,
-#     )
-
+# st.set_page_config(layout="wide")
 
 # def load_image(image_path):
 #     try:
@@ -117,7 +25,7 @@
 #         return None
 
 # # Gemini API setup
-# GOOGLE_API_KEY = "AIzaSyBeXozw3LS1Bo43KaBVcsCZlwaI0PNCbNc"  # Replace with your actual API key
+# GOOGLE_API_KEY = "AIzaSyBCDEvi-DMCymPXPNHiVrcnxWc_DLCQ2p4"  # Replace with your actual API key
 # genai.configure(api_key=GOOGLE_API_KEY)
 
 # # Load content from JSON files
@@ -131,29 +39,9 @@
 # conn = sqlite3.connect('responses.db')
 # c = conn.cursor()
 
-# # Check if the table exists
-# c.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='responses' ''')
-
-# # If the table doesn't exist, create it with the new schema
-# if c.fetchone()[0] == 0:
-#     c.execute('''CREATE TABLE responses
-#                  (name TEXT, email TEXT, experience TEXT, advise_frequency TEXT, 
-#                   client_types TEXT, knowledge_ratings TEXT, challenges TEXT, goals TEXT)''')
-# else:
-#     # If the table exists, alter it to add the new columns
-#     try:
-#         c.execute('ALTER TABLE responses ADD COLUMN name TEXT')
-#         c.execute('ALTER TABLE responses ADD COLUMN email TEXT')
-#         c.execute('ALTER TABLE responses ADD COLUMN experience TEXT')
-#         c.execute('ALTER TABLE responses ADD COLUMN advise_frequency TEXT')
-#         c.execute('ALTER TABLE responses ADD COLUMN client_types TEXT')
-#         c.execute('ALTER TABLE responses ADD COLUMN knowledge_ratings TEXT')
-#         c.execute('ALTER TABLE responses ADD COLUMN challenges TEXT')
-#         c.execute('ALTER TABLE responses ADD COLUMN goals TEXT')
-#     except sqlite3.OperationalError:
-#         # If columns already exist, this error will be raised. We can ignore it.
-#         pass
-
+# # Create table
+# c.execute('''CREATE TABLE IF NOT EXISTS responses
+#              (mcq1 TEXT, mcq2 TEXT, mcq3 TEXT, txt1 TEXT, txt2)''')
 # conn.commit()
 
 # # Initialize session state
@@ -188,7 +76,7 @@
     
 #     if st.button("Go to Questionnaire"):
 #         st.session_state.page = "Questionnaire"
-#         st.rerun()
+#         st.experimental_rerun()
 
 # def questionnaire():
 #     st.title("Advisor Questionnaire")
@@ -224,70 +112,44 @@
 
 #     st.markdown('<p class="big-font">Hello Advisor, Please answer the following questions:</p>', unsafe_allow_html=True)
 
-#     # Personal Information
-#     st.subheader("Personal Information")
-#     name = st.text_input("1. Name:")
-#     email = st.text_input("2. Email:")
-#     experience = st.radio("3. Years of Experience in Financial Advisory:",
-#                           ("Less than 1 year", "1-3 years", "4-7 years", "8+ years"))
+#     st.subheader("Multiple Choice Questions")
+    
+#     col1, col2 = st.columns(2)
+    
+#     with col1:
+#         mcq1 = st.radio("1. Years of experience in retirement planning:", 
+#                         ("Less than 1 year", "1-5 years", "5-10 years", "More than 10 years"),
+#                         key="mcq1")
+        
+#         mcq2 = st.radio("2. Primary area of expertise:", 
+#                         ("Investment Management", "Tax Planning", "Estate Planning", "Comprehensive Retirement Planning"),
+#                         key="mcq2")
+    
+#     with col2:
+#         mcq3 = st.radio("3. Types of clients you typically work with:", 
+#                         ("Individuals", "Families", "Small Businesses", "Corporations"),
+#                         key="mcq3")
 
-#     # Client Engagement
-#     st.subheader("Client Engagement")
-#     advise_frequency = st.radio("1. How often do you advise clients on retirement planning?",
-#                                 ("Frequently", "Occasionally", "Rarely", "Never"))
-#     client_types = st.multiselect("2. Which types of clients do you primarily work with? (Select all that apply)",
-#                                   ["High-income earners", "Business owners", "Middle-income earners",
-#                                    "Individuals nearing retirement", "Young professionals"])
-
-#     # Retirement Planning Knowledge
-#     st.subheader("Retirement Planning Knowledge")
-#     knowledge_areas = ["Retirement savings strategies", "Investment options for retirement",
-#                        "Social Security benefits", "Healthcare planning for retirement",
-#                        "Tax planning for retirement"]
-#     knowledge_ratings = {}
-#     st.write("1. How confident are you in your knowledge of the following areas? (Rate on a scale of 1-5, with 1 being 'Not Confident' and 5 being 'Very Confident')")
-#     for area in knowledge_areas:
-#         knowledge_ratings[area] = st.slider(area, 1, 5, 3)
-
-#     challenges = st.multiselect("2. What are the biggest challenges you face when advising clients on retirement planning? (Select up to three)",
-#                                 ["Lack of client knowledge", "Market volatility", "Healthcare cost planning",
-#                                  "Tax implications", "Client engagement and follow-through", "Managing debt"],
-#                                 max_selections=3)
-
-#     # Training Goals
-#     st.subheader("Training Goals")
-#     goals = st.multiselect("1. What are your primary goals for using the Retirement Readiness Simulator? (Select all that apply)",
-#                            ["Improve overall knowledge of retirement planning",
-#                             "Enhance client engagement techniques",
-#                             "Practice handling different client scenarios",
-#                             "Gain confidence in providing retirement advice",
-#                             "Learn advanced retirement strategies"])
+#     st.subheader("Open-Ended Questions")
+    
+#     txt1 = st.text_area("4. Describe a successful retirement plan you created for a client and the key strategies you used:", 
+#                         height=150, key="txt1")
+    
+#     txt2 = st.text_area("5. What motivates you to help clients with their retirement planning?", 
+#                         height=150, key="txt2")
 
 #     if st.button("Submit", key="submit_btn", help="Click to submit your responses"):
-#         if all([name, email, experience, advise_frequency, client_types, challenges, goals]):
+#         if all([mcq1, mcq2, mcq3, txt1, txt2]):  # Check if all fields are filled
 #             # Store the responses in the database
-#             responses = {
-#                 "name": name,
-#                 "email": email,
-#                 "experience": experience,
-#                 "advise_frequency": advise_frequency,
-#                 "client_types": ", ".join(client_types),
-#                 "knowledge_ratings": json.dumps(knowledge_ratings),
-#                 "challenges": ", ".join(challenges),
-#                 "goals": ", ".join(goals)
-#             }
-#             c.execute("""
-#                 INSERT INTO responses 
-#                 (name, email, experience, advise_frequency, client_types, knowledge_ratings, challenges, goals) 
-#                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-#             """, tuple(responses.values()))
+#             c.execute("INSERT INTO responses (mcq1, mcq2, mcq3, txt1, txt2) VALUES (?, ?, ?, ?, ?)",
+#                       (mcq1, mcq2, mcq3, txt1, txt2))
 #             conn.commit()
 #             st.success("Your responses have been submitted successfully!")
             
 #             # Add a small delay before changing the page
 #             time.sleep(2)
 #             st.session_state.page = "Client"
-#             st.rerun()
+#             st.experimental_rerun()
 #         else:
 #             st.warning("Please answer all questions before submitting.")
 
@@ -455,11 +317,11 @@
 #     1. Observe the conversation between the financial advisor and the client.
 #     2. Provide constructive feedback on the advisor's approach.
 #     3. Suggest questions or topics that the advisor should explore further.
-#     4. Offer tips on how to address the client's concerns and goals better.
+#     4. Offer tips on how to better address the client's concerns and goals.
 #     5. Highlight any missed opportunities or areas where the advisor could dive deeper.
 #     6. Provide guidance on best practices in retirement planning and client communication.
 
-#     Your advice should be concise only in 4 lines, actionable, and focused on improving the quality of the financial assessment and advice given to the client.
+#     Your advice should be concise, actionable, and focused on improving the quality of the financial assessment and advice given to the client.
 #     """
 
 #     evaluator_persona = """
@@ -480,19 +342,19 @@
 #         {
 #             "name": "Sarah Johnson",
 #             "description": "55-year-old Senior Executive at a Tech Company seeking retirement advice.",
-#             "image": "img/Sarah-Johnson.webp",
+#             "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
 #             "profile": sarah_persona
 #         },
 #         {
 #             "name": "John Miller",
 #             "description": "50-year-old Business Owner seeking retirement advice.",
-#             "image": "img/John Miller.webp",
+#             "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
 #             "profile": john_persona
 #         },
 #         {
 #             "name": "Emily Davis",
 #             "description": "45-year-old Marketing Manager seeking retirement advice.",
-#             "image": "img/Emily-Davis.webp",
+#             "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
 #             "profile": emily_persona
 #         }
 #     ]
@@ -539,7 +401,7 @@
 #     2. Be direct and honest about your financial information when asked specific questions.
 #     3. Maintain a natural, conversational tone while showing your financial literacy level.
 #     4. Express your specific concerns and goals when relevant.
-#     5. Show that you're knowledgeable about finances to the extent of your financial literacy but open to professional advice.
+#     5. Show that you're knowledgeable about finances to the extent of your financial literacy, but open to professional advice.
 #     6. If the question isn't about a specific financial detail, focus on your goals, concerns, or approach to retirement planning.
 #     7. Feel free to ask follow-up questions to gain more insights from the advisor.
 #     8. Do not repeat the financial advisor's question in your response.
@@ -582,7 +444,7 @@
 
 #         {chat_history}
 
-#         Based on this conversation, provide concise, actionable advice to the financial advisor on how to improve their assessment and better address the client's needs.
+#         Based on this conversation, provide brief, actionable advice to the financial advisor on how to improve their assessment and better address the client's needs.
 
 #         Mentor Agent:
 #         """
@@ -675,9 +537,10 @@
 #                     st.session_state.chat_id = str(uuid.uuid4())
 #                     st.session_state.messages = []
 #                     st.session_state.current_persona = persona
-#                     st.rerun()
+#                     st.experimental_rerun()
 
 #     if st.session_state.chat_started and st.session_state.current_persona:
+#         # Sidebar for controls
 #         with st.sidebar:
 #             st.subheader("Chat Controls")
 #             st.session_state.show_mentor = st.checkbox("Show Mentor Advice", value=st.session_state.show_mentor)
@@ -686,11 +549,11 @@
 #                 st.session_state.messages = []
 #                 st.session_state.chat_started = False
 #                 st.session_state.current_persona = None
-#                 st.rerun()
+#                 st.experimental_rerun()
             
 #             if st.button("End Chat", key="end_btn"):
 #                 st.session_state.chat_ended = True
-#                 st.rerun()
+#                 st.experimental_rerun()
         
 #         # Main chat interface
 #         st.subheader(f"Chatting with {st.session_state.current_persona['name']}")
@@ -747,7 +610,7 @@
 #                 st.session_state.chat_started = False
 #                 st.session_state.current_persona = None
 #                 st.session_state.chat_ended = False
-#                 st.rerun()
+#                 st.experimental_rerun()
 
 #     else:
 #         st.write("Please select a client to start the conversation.")
@@ -775,32 +638,6 @@
 # conn.close()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import streamlit as st
 from streamlit_option_menu import option_menu
 import sqlite3
@@ -814,49 +651,11 @@ import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import re
 import uuid
-import os
-
-# Hardcoded CSS styles
-css = """
-/* Sidebar width */
-section[data-testid="stSidebar"] {
-    width: 338px !important;
-}
-
-/* Main content area */
-.main .block-container {
-    max-width: 1200px;
-    padding-top: 1rem;
-    padding-right: 1rem;
-    padding-left: 1rem;
-    padding-bottom: 1rem;
-}
-
-/* Text colors */
-.stText, .stMarkdown, .stTitle, .stSubheader {
-    color: white;
-}
-
-.stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
-    font-weight: bold;
-}
-
-/* Sidebar logo */
-[data-testid="stSidebarNav"] {
-    background-repeat: no-repeat;
-    padding-top: 80px;
-    background-position: 20px 20px;
-}
-"""
-
-# Load the page icon
-page_icon = Image.open("img/favicon (3).ico")
-
-# Set page configuration
-st.set_page_config(page_title="Simulated-Practice", page_icon=page_icon, layout="wide", initial_sidebar_state="expanded")
-
-# Load and display the sidebar logo
-LOGO_PATH = "img/Theoremlabs_logo copy.png"  # Update this path as needed
+import base64
+from PIL import Image
+import io
+import re
+st.set_page_config(layout="wide")
 
 def load_image(image_path):
     try:
@@ -865,59 +664,13 @@ def load_image(image_path):
         st.error(f"Image file {image_path} not found.")
         return None
 
-if os.path.exists(LOGO_PATH):
-    logo_img = load_image(LOGO_PATH)
-    if logo_img:
-        # Calculate new dimensions while maintaining aspect ratio
-        max_width = 550
-        max_height = 220
-        logo_img.thumbnail((max_width, max_height))
-        
-        buffer = io.BytesIO()
-        logo_img.save(buffer, format="PNG")
-        img_b64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-
-        # Apply the sidebar logo style
-        st.markdown(
-            f"""
-            <style>
-                [data-testid="stSidebarNav"] {{
-                    background-image: url('data:image/png;base64,{img_b64}');
-                    background-repeat: no-repeat;
-                    background-position: 20px 20px;
-                    background-size: auto 160px;
-                    padding-top: 140px;
-                    background-color: rgba(0, 0, 0, 0);
-                }}
-                [data-testid="stSidebarNav"]::before {{
-                    content: "";
-                    display: block;
-                    height: 140px;
-                }}
-                [data-testid="stSidebarNav"] > ul {{
-                    padding-top: 0px;
-                }}
-                .css-17lntkn {{
-                    padding-top: 0px !important;
-                }}
-                .css-1544g2n {{
-                    padding-top: 0rem;
-                }}
-            </style>
-            """,
-            unsafe_allow_html=True,
-        )
-
 # Gemini API setup
-GOOGLE_API_KEY = "AIzaSyBeXozw3LS1Bo43KaBVcsCZlwaI0PNCbNc"  # Replace with your actual API key
+GOOGLE_API_KEY = "AIzaSyBCDEvi-DMCymPXPNHiVrcnxWc_DLCQ2p4"  # Replace with your actual API key
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Load content from JSON files
 with open('data/home_content.json', 'r') as f:
     home_content = json.load(f)
-
-with open('data/client_personas.json', 'r') as f:
-    client_personas_data = json.load(f)
 
 # Database setup
 conn = sqlite3.connect('responses.db')
@@ -952,6 +705,14 @@ conn.commit()
 if 'page' not in st.session_state:
     st.session_state.page = 'Home'
 
+# Load image function
+def load_image(image_path):
+    try:
+        return Image.open(image_path)
+    except FileNotFoundError:
+        st.error(f"Image file {image_path} not found.")
+        return None
+
 def home():
     st.title(home_content["title"])
     st.subheader(home_content["subtitle"])
@@ -972,7 +733,7 @@ def home():
     
     if st.button("Go to Questionnaire"):
         st.session_state.page = "Questionnaire"
-        st.rerun()
+        st.experimental_rerun()
 
 def questionnaire():
     st.title("Advisor Questionnaire")
@@ -1071,9 +832,10 @@ def questionnaire():
             # Add a small delay before changing the page
             time.sleep(2)
             st.session_state.page = "Client"
-            st.rerun()
+            st.experimental_rerun()
         else:
             st.warning("Please answer all questions before submitting.")
+
 
 def client_personas():
     # Sarah's full persona
@@ -1238,11 +1000,11 @@ def client_personas():
     1. Observe the conversation between the financial advisor and the client.
     2. Provide constructive feedback on the advisor's approach.
     3. Suggest questions or topics that the advisor should explore further.
-    4. Offer tips on how to address the client's concerns and goals better.
+    4. Offer tips on how to better address the client's concerns and goals.
     5. Highlight any missed opportunities or areas where the advisor could dive deeper.
     6. Provide guidance on best practices in retirement planning and client communication.
 
-    Your advice should be concise only in 4 lines, actionable, and focused on improving the quality of the financial assessment and advice given to the client.
+    Your advice should be concise, actionable, and focused on improving the quality of the financial assessment and advice given to the client.
     """
 
     evaluator_persona = """
@@ -1263,39 +1025,74 @@ def client_personas():
         {
             "name": "Sarah Johnson",
             "description": "55-year-old Senior Executive at a Tech Company seeking retirement advice.",
-            "image": "img/Sarah-Johnson.webp",
-            "profile": sarah_persona
+            "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+            "profile": sarah_persona,
+            "additional_info": """
+            **Profile:** Sarah is well-versed in financial planning and has been actively managing her retirement savings for years. She has a clear understanding of her retirement goals and regularly reviews her investment portfolio. Sarah is confident but seeks professional advice to optimize her retirement strategy and ensure she's fully prepared for any potential risks.
+            
+            **Scenario Interaction:** Sarah engages with the advisor to review her current retirement plan, seeking advice on fine-tuning her investment strategy, minimizing tax liabilities, and planning for healthcare costs. She asks detailed questions and is interested in sophisticated financial products and strategies.
+            """
         },
         {
             "name": "John Miller",
             "description": "50-year-old Business Owner seeking retirement advice.",
-            "image": "img/John Miller.webp",
-            "profile": john_persona
+            "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+            "profile": john_persona,
+            "additional_info": """
+            **Profile:** John has accumulated substantial wealth but has not actively planned for retirement. He is focused on his business and personal life, leaving little time to manage or understand his retirement savings. John is aware that he needs to start planning but is unsure where to begin and what steps to take.
+            
+            **Scenario Interaction:** John engages with the advisor to get a comprehensive overview of retirement planning. He needs education on the importance of diversifying investments, understanding retirement accounts, and planning for future healthcare costs. The advisor provides step-by-step guidance and helps John create a detailed retirement plan.
+            """
         },
         {
             "name": "Emily Davis",
             "description": "45-year-old Marketing Manager seeking retirement advice.",
-            "image": "img/Emily-Davis.webp",
-            "profile": emily_persona
+            "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+            "profile": emily_persona,
+            "additional_info": """
+            **Profile:** Emily has not prioritized retirement savings and finds herself significantly behind in her retirement planning. She has some debt and limited knowledge of investment options. Emily is starting to realize the importance of planning for retirement but feels overwhelmed and unsure about how to catch up.
+            
+            **Scenario Interaction:** Emily engages with the advisor seeking a realistic plan to become retirement ready. The advisor helps her understand the basics of retirement planning, prioritize debt reduction, and develop a savings plan. Emily is guided through setting up automatic contributions, exploring employer match options, and understanding the importance of starting early and staying consistent.
+            """
         }
     ]
 
+
     def clean_response(text):
-        # Remove asterisks
-        text = re.sub(r'\*+', '', text)
+        # Remove asterisks and other formatting characters
+        text = re.sub(r'[*_~`]', '', text)
         
-        # Remove repeated phrases
+        # Replace various types of dashes with regular hyphens
+        text = re.sub(r'[–—−]', '-', text)
+        
+        # Add spaces after punctuation if missing
+        text = re.sub(r'([.,!?;:])(?=\S)', r'\1 ', text)
+        
+        # Add spaces between words if missing (camel case split)
+        text = re.sub(r'([a-z])([A-Z])', r'\1 \2', text)
+        
+        # Add spaces between numbers and words if missing
+        text = re.sub(r'(\d)([a-zA-Z])', r'\1 \2', text)
+        text = re.sub(r'([a-zA-Z])(\d)', r'\1 \2', text)
+        
+        # Remove extra spaces
+        text = re.sub(r'\s+', ' ', text)
+        
+        # Fix spacing around apostrophes
+        text = re.sub(r'\s\'', "'", text)
+        text = re.sub(r'\'\s', "' ", text)
+        
+        # Remove repeated phrases (case insensitive)
         words = text.split()
         cleaned_words = []
         for i, word in enumerate(words):
             if i == 0 or word.lower() != words[i-1].lower():
                 cleaned_words.append(word)
         
-        # Rejoin the words and fix spacing after punctuation
+        # Rejoin the words
         cleaned_text = ' '.join(cleaned_words)
-        cleaned_text = re.sub(r'([.,!?])(\S)', r'\1 \2', cleaned_text)
         
-        return cleaned_text
+        return cleaned_text.strip()
 
     def get_client_response(conversation_history, user_input, persona):
         model = genai.GenerativeModel('gemini-1.5-flash')
@@ -1322,7 +1119,7 @@ def client_personas():
     2. Be direct and honest about your financial information when asked specific questions.
     3. Maintain a natural, conversational tone while showing your financial literacy level.
     4. Express your specific concerns and goals when relevant.
-    5. Show that you're knowledgeable about finances to the extent of your financial literacy but open to professional advice.
+    5. Show that you're knowledgeable about finances to the extent of your financial literacy, but open to professional advice.
     6. If the question isn't about a specific financial detail, focus on your goals, concerns, or approach to retirement planning.
     7. Feel free to ask follow-up questions to gain more insights from the advisor.
     8. Do not repeat the financial advisor's question in your response.
@@ -1344,7 +1141,10 @@ def client_personas():
         # Extract and clean the text from the response
         if response.parts:
             raw_text = response.parts[0].text
-            cleaned_text = clean_response(raw_text)
+            # Pre-process the text
+            pre_processed_text = re.sub(r'([a-z])([A-Z])', r'\1 \2', raw_text)
+            pre_processed_text = re.sub(r'([.,!?])(\S)', r'\1 \2', pre_processed_text)
+            cleaned_text = clean_response(pre_processed_text)
             return cleaned_text
         else:
             return "I'm sorry, I couldn't generate a response at this time."
@@ -1365,7 +1165,13 @@ def client_personas():
 
         {chat_history}
 
-        Based on this conversation, provide concise, actionable advice to the financial advisor on how to improve their assessment and better address the client's needs.
+        Based on this conversation, provide 5 bullet points of actionable advice to the financial advisor on how to improve their assessment and better address the client's needs. Format your response as follows:
+
+    • [Advice point 1]
+    • [Advice point 2]
+    • [Advice point 3]
+    • [Advice point 4]
+    • [Advice point 5]
 
         Mentor Agent:
         """
@@ -1399,11 +1205,40 @@ def client_personas():
         prompt = f"""
         {evaluator_persona}
 
-        Here's the entire conversation between the financial advisor and the client:
+Here's the entire conversation between the financial advisor and the client:
 
-        {chat_history}
+{chat_history}
 
-        Based on this conversation, provide a comprehensive evaluation of the financial advisor's performance.
+Based on this conversation, provide a comprehensive evaluation of the financial advisor's performance. Use the following format:
+
+Overall Assessment:
+- [Brief overall assessment point 1]
+- [Brief overall assessment point 2]
+
+Strengths:
+- [Strength 1]
+- [Strength 2]
+- [Strength 3]
+
+Areas for Improvement:
+- [Area 1]: [Brief explanation]
+- [Area 2]: [Brief explanation]
+- [Area 3]: [Brief explanation]
+
+Recommendations:
+- [Recommendation 1]: [Brief explanation]
+- [Recommendation 2]: [Brief explanation]
+- [Recommendation 3]: [Brief explanation]
+
+Performance Ratings (out of 10):
+- Communication: [Rating]
+- Technical Knowledge: [Rating]
+- Client Rapport: [Rating]
+- Overall Performance: [Rating]
+
+Conclusion:
+[Final thoughts and summary]
+
 
         Evaluator Agent:
         """
@@ -1443,24 +1278,31 @@ def client_personas():
 
     # Persona selection
     if not st.session_state.chat_started:
-        st.subheader("Select a client to start chatting:")
+        st.write("Choose one of the following clients to begin your retirement planning simulation:")
         
-        cols = st.columns(3)
         for i, persona in enumerate(client_personas):
-            with cols[i]:
-                st.markdown(f"### {persona['name']}")
-                img = load_image(persona['image'])
-                if img:
-                    st.image(img, use_column_width=True)
-                st.write(persona['description'])
-                if st.button(f"Chat with {persona['name']}", key=f"btn_{i}"):
+            with st.container():
+                st.subheader(f"{persona['name']} - {persona['description']}")
+                col1, col2 = st.columns([1, 2])
+                with col1:
+                    img = load_image(persona['image'])
+                    if img:
+                        st.image(img, use_column_width=True)
+                with col2:
+                    st.markdown(persona['additional_info'])
+                
+                if st.button(f"Start Simulation with {persona['name']}", key=f"btn_{i}"):
                     st.session_state.chat_started = True
                     st.session_state.chat_id = str(uuid.uuid4())
                     st.session_state.messages = []
                     st.session_state.current_persona = persona
-                    st.rerun()
+                    st.experimental_rerun()
+            
+            # Add a divider between client profiles
+            st.divider()
 
     if st.session_state.chat_started and st.session_state.current_persona:
+        # Sidebar for controls
         with st.sidebar:
             st.subheader("Chat Controls")
             st.session_state.show_mentor = st.checkbox("Show Mentor Advice", value=st.session_state.show_mentor)
@@ -1469,11 +1311,11 @@ def client_personas():
                 st.session_state.messages = []
                 st.session_state.chat_started = False
                 st.session_state.current_persona = None
-                st.rerun()
+                st.experimental_rerun()
             
             if st.button("End Chat", key="end_btn"):
                 st.session_state.chat_ended = True
-                st.rerun()
+                st.experimental_rerun()
         
         # Main chat interface
         st.subheader(f"Chatting with {st.session_state.current_persona['name']}")
@@ -1503,34 +1345,112 @@ def client_personas():
                 message_placeholder = st.empty()
                 with st.spinner(f"{st.session_state.current_persona['name']} is thinking..."):
                     full_response = get_client_response(st.session_state.messages, prompt, st.session_state.current_persona)
-                message_placeholder.markdown(f"{full_response}")
+                    # Additional cleaning step
+                    display_response = clean_response(full_response)
+                message_placeholder.markdown(f"{display_response}")
             
             st.session_state.messages.append({"role": "assistant", "content": full_response})
 
+            # Mentor Agent
+            # Mentor Agent
+            # Mentor Agent
             # Mentor Agent
             if st.session_state.show_mentor:
                 with chat_container.chat_message("mentor"):
                     mentor_placeholder = st.empty()
                     with st.spinner("Mentor is analyzing..."):
                         mentor_advice = get_mentor_advice(st.session_state.messages)
-                    mentor_placeholder.markdown(f"**Mentor Agent:** {mentor_advice}")
+                    
+                    # Display the header
+                    st.markdown("**Mentor Agent:**")
+                    
+                    # Check if mentor_advice contains bullet points
+                    if '•' in mentor_advice:
+                        # Split the advice into bullet points
+                        advice_points = mentor_advice.split('•')
+                        
+                        # Display each bullet point
+                        for point in advice_points[1:]:  # Skip the first split as it's usually empty
+                            if point.strip():  # Check if the point is not just whitespace
+                                st.markdown(f"• {point.strip()}")
+                    else:
+                        # If there are no bullet points, display the advice as is
+                        st.markdown(mentor_advice)
+
+            # Remove this part as it's redundant and causes the error
+            # Display the header
+            # st.markdown("**Mentor Agent:**")
+
+            # Display each bullet point
+            # for point in advice_points[1:]:  # Skip the first split as it's usually empty
+            #     st.markdown(f"• {point.strip()}")
 
             # Scroll to the bottom of the chat
             st.query_params["scroll_to_bottom"] = True
+
+        # Display Evaluator feedback after ending the chat
+        # Display Evaluator feedback after ending the chat
+        # Display Evaluator feedback after ending the chat
+        # Display Evaluator feedback after ending the chat
+ 
+
+        # Display Evaluator feedback after ending the chat
+
+
+        def clean_and_format_text(text):
+            # Remove any single letters that are alone on a line
+            text = re.sub(r'^[a-zA-Z]$', '', text, flags=re.MULTILINE)
+            # Remove any remaining newlines
+            text = re.sub(r'\n+', ' ', text)
+            # Clean up extra spaces
+            text = re.sub(r'\s+', ' ', text).strip()
+            return text
 
         # Display Evaluator feedback after ending the chat
         if 'chat_ended' in st.session_state and st.session_state.chat_ended:
             st.subheader("Chat Ended - Evaluator Feedback")
             with st.spinner("Evaluator is reviewing the conversation..."):
                 evaluator_feedback = get_evaluator_feedback(st.session_state.messages)
-            st.markdown(f"**Evaluator Agent:** {evaluator_feedback}")
+            
+            # Clean and format the text
+            evaluator_feedback = clean_and_format_text(evaluator_feedback)
+            
+            # Display the header
+            st.markdown("### Evaluator Agent:")
+            
+            # Split the feedback into sections
+            sections = re.split(r'(?=\b(?:Overall Assessment|Strengths|Areas for Improvement|Recommendations|Performance Ratings|Conclusion)\b)', evaluator_feedback)
+            
+            for section in sections:
+                if section.strip():
+                    # Split the section into title and content
+                    parts = re.split(r':', section, 1)
+                    if len(parts) > 1:
+                        title, content = parts
+                        st.markdown(f"#### {title.strip()}")
+                        
+                        # Split content into bullet points
+                        points = re.split(r'•|-', content)
+                        for point in points:
+                            point = point.strip()
+                            if point:
+                                if 'out of 10' in point.lower():
+                                    key, value = re.split(r':', point, 1)
+                                    st.markdown(f"**{key.strip()}:** {value.strip()}")
+                                else:
+                                    st.markdown(f"• {point}")
+                    else:
+                        st.markdown(section)
+                
+                # Add a separator between sections
+                st.markdown("---")
             
             if st.button("Start New Chat"):
                 st.session_state.messages = []
                 st.session_state.chat_started = False
                 st.session_state.current_persona = None
                 st.session_state.chat_ended = False
-                st.rerun()
+                st.experimental_rerun()
 
     else:
         st.write("Please select a client to start the conversation.")
