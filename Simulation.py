@@ -372,11 +372,11 @@ def client_personas():
     1. Observe the conversation between the financial advisor and the client.
     2. Provide constructive feedback on the advisor's approach.
     3. Suggest questions or topics that the advisor should explore further.
-    4. Offer tips on how to better address the client's concerns and goals.
+    4. Offer tips on how to address the client's concerns and goals better.
     5. Highlight any missed opportunities or areas where the advisor could dive deeper.
     6. Provide guidance on best practices in retirement planning and client communication.
 
-    Your advice should be concise, actionable, and focused on improving the quality of the financial assessment and advice given to the client.
+    Your advice should be concise only in 4 lines, actionable, and focused on improving the quality of the financial assessment and advice given to the client.
     """
 
     evaluator_persona = """
@@ -456,7 +456,7 @@ def client_personas():
     2. Be direct and honest about your financial information when asked specific questions.
     3. Maintain a natural, conversational tone while showing your financial literacy level.
     4. Express your specific concerns and goals when relevant.
-    5. Show that you're knowledgeable about finances to the extent of your financial literacy, but open to professional advice.
+    5. Show that you're knowledgeable about finances to the extent of your financial literacy but open to professional advice.
     6. If the question isn't about a specific financial detail, focus on your goals, concerns, or approach to retirement planning.
     7. Feel free to ask follow-up questions to gain more insights from the advisor.
     8. Do not repeat the financial advisor's question in your response.
@@ -499,7 +499,7 @@ def client_personas():
 
         {chat_history}
 
-        Based on this conversation, provide brief, actionable advice to the financial advisor on how to improve their assessment and better address the client's needs.
+        Based on this conversation, provide concise, actionable advice to the financial advisor on how to improve their assessment and better address the client's needs.
 
         Mentor Agent:
         """
