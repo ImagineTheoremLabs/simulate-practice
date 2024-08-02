@@ -34,7 +34,7 @@ def load_image(image_path):
         return None
 
 # Gemini API setup
-GOOGLE_API_KEY = "AIzaSyBISl51tffaCJeUcMEbm1VsKprcj8JfTTw"  # Replace with your actual API key
+GOOGLE_API_KEY = "AIzaSyBeXozw3LS1Bo43KaBVcsCZlwaI0PNCbNc"  # Replace with your actual API key
 genai.configure(api_key=GOOGLE_API_KEY)
 
 # Load content from JSON files
