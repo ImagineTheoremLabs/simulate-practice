@@ -15,7 +15,7 @@ import base64
 from PIL import Image
 import io
 
-st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
 
 
 LOGO_PATH = "img/Theoremlabs_logo copy.png"  # Update this path as needed
