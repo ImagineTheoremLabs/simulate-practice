@@ -26,45 +26,6 @@ page_icon = Image.open("img/favicon (3).ico")
 # Set page configuration
 st.set_page_config(page_title="Simulated-Practice", page_icon=page_icon, layout="wide", initial_sidebar_state="expanded")
 
-
-
-
-# Hardcoded CSS styles
-css = """
-/* Sidebar width */
-section[data-testid="stSidebar"] {
-    width: 338px !important;
-}
-
-/* Main content area */
-.main .block-container {
-    max-width: 1200px;
-    padding-top: 1rem;
-    padding-right: 1rem;
-    padding-left: 1rem;
-    padding-bottom: 1rem;
-}
-
-/* Text colors */
-.stText, .stMarkdown, .stTitle, .stSubheader {
-    color: white;
-}
-
-.stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
-    font-weight: bold;
-}
-
-/* Sidebar logo */
-[data-testid="stSidebarNav"] {
-    background-repeat: no-repeat;
-    padding-top: 80px;
-    background-position: 20px 20px;
-}
-"""
-
-# Apply CSS styles
-st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
-
 # Load and display the sidebar logo
 if os.path.exists(LOGO_PATH):
     with open(LOGO_PATH, "rb") as file:
