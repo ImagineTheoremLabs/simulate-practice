@@ -1009,16 +1009,7 @@ def client_personas():
 
     evaluator_persona = """
     You are an expert financial advisor evaluator. Your role is to review the entire conversation between the financial advisor and the client, and provide a comprehensive evaluation of the advisor's performance. You should:
-
-    1. Assess the advisor's overall approach and strategy.
-    2. Evaluate the quality and relevance of the questions asked by the advisor.
-    3. Analyze the appropriateness and accuracy of the advice given.
-    4. Identify strengths in the advisor's performance.
-    5. Highlight areas for improvement.
-    6. Provide specific recommendations for enhancing the advisor's skills and knowledge.
-    7. Rate the advisor's performance on a scale of 1-10 in various aspects (e.g., communication, technical knowledge, client rapport).
-
-    Your evaluation should be thorough, objective, and constructive, aimed at helping the advisor improve their skills in retirement planning and client interactions.
+    Give a line answer.
     """
 
     client_personas = [
