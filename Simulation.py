@@ -655,6 +655,7 @@ import base64
 from PIL import Image
 import io
 import re
+import os
 st.set_page_config(layout="wide")
 
 def load_image(image_path):
@@ -664,9 +665,17 @@ def load_image(image_path):
         st.error(f"Image file {image_path} not found.")
         return None
 
+
 # Gemini API setup
-GOOGLE_API_KEY = "AIzaSyBCDEvi-DMCymPXPNHiVrcnxWc_DLCQ2p4"  # Replace with your actual API key
-genai.configure(api_key=GOOGLE_API_KEY)
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+if GOOGLE_API_KEY:
+    configure(api_key=GOOGLE_API_KEY)
+else:
+    st.error("API key not found. Please set the GOOGLE_API_KEY environment variable.")
+
+# # Gemini API setup
+# GOOGLE_API_KEY = "AIzaSyBCDEvi-DMCymPXPNHiVrcnxWc_DLCQ2p4"  # Replace with your actual API key
+# genai.configure(api_key=GOOGLE_API_KEY)
 
 # Load content from JSON files
 with open('data/home_content.json', 'r') as f:
