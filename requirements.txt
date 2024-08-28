@@ -10,6 +10,7 @@ cachetools==5.3.3
 certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
+python-dotenv
 gitpython==3.1.43
 idna==3.6
 importlib-metadata==8.0.0
