@@ -31,7 +31,8 @@ def load_image(image_path):
 load_dotenv()
 
 # Fetch the API key from the environment
-GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
+GOOGLE_API_KEY = "AIzaSyCQMi_h02TMadAhW8ubeCI419vTv3UrnLE"
+# GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
 
 if not GOOGLE_API_KEY:
     st.error("Google API key not found. Please make sure it's set in the .env file.")
