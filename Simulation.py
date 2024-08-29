@@ -20,6 +20,18 @@ from dotenv import load_dotenv
 
 st.set_page_config(layout="wide")
 
+st.markdown("""
+<style>
+    :root {
+        --primary-color: #4a90e2;
+        --background-color: #1a1a1a;
+        --secondary-background-color: #2c2c2c;
+        --text-color: #e0e0e0;
+        --font: sans-serif;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 def load_image(image_path):
     try:
         return Image.open(image_path)
