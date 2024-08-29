@@ -130,7 +130,7 @@ def home():
         text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
     .feature-item, .value-item {
-        background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+        background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%);
         padding: 15px;
         border-radius: 8px;
         margin-bottom: 15px;
@@ -141,7 +141,7 @@ def home():
         height: 100%;
     }
     .feature-item:hover, .value-item:hover {
-        background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+        background: linear-gradient(135deg, #5a5a5a 0%, #2a2a2a 100%);
         transform: translateY(-3px);
         box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
@@ -161,18 +161,18 @@ def home():
         font-weight: bold;
         border-radius: 5px;
         padding: 10px 20px;
-        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
         color: white;
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
     }
     .cta-button:hover {
-        background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+        background: linear-gradient(135deg, #388E3C 0%, #4CAF50 100%);
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     .container {
-        background: linear-gradient(135deg, #2a2a2a 0%, #3c3c3c 100%);
+        background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%);
         padding: 15px;
         border-radius: 8px;
         margin: 20px 0;
@@ -320,6 +320,7 @@ def home():
     if st.button("Begin Simulation", key="start_simulation", help="Click to start your retirement planning simulation", type="primary"):
         st.session_state.page = "Questionnaire"
         st.experimental_rerun()
+
 
 def questionnaire():
     st.title("Advisor Questionnaire")
