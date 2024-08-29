@@ -397,7 +397,7 @@ def client_personas():
         {
             "name": "Sarah Johnson",
             "description": "55-year-old Senior Executive at a Tech Company seeking retirement advice.",
-            "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+            "image": "img/DALL·E 2024-08-29 11.02.38 - A realistic portrait of a below-average looking white woman shown from the waist up, facing directly forward. She has shoulder-length, slightly messy .webp",
             "profile": sarah_persona,
             "additional_info": """
             **Profile:** Sarah is well-versed in financial planning and has been actively managing her retirement savings for years. She has a clear understanding of her retirement goals and regularly reviews her investment portfolio. Sarah is confident but seeks professional advice to optimize her retirement strategy and ensure she's fully prepared for any potential risks.
@@ -408,7 +408,7 @@ def client_personas():
         {
             "name": "John Miller",
             "description": "50-year-old Business Owner seeking retirement advice.",
-            "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+            "image": "img/DALL·E 2024-08-29 11.00.55 - A realistic portrait of a below-average looking African American man shown from the waist up, facing directly forward. He has short, slightly unkempt .webp",
             "profile": john_persona,
             "additional_info": """
             **Profile:** John has accumulated substantial wealth but has not actively planned for retirement. He is focused on his business and personal life, leaving little time to manage or understand his retirement savings. John is aware that he needs to start planning but is unsure where to begin and what steps to take.
@@ -419,7 +419,7 @@ def client_personas():
         {
             "name": "Emily Davis",
             "description": "45-year-old Marketing Manager seeking retirement advice.",
-            "image": "img/passport_like_photo_of_a_person_in_a_suit-2.jpeg",
+            "image": "img/DALL·E 2024-08-29 11.03.32 - A realistic portrait of a below-average looking Asian woman shown from the waist up, facing directly forward. She has shoulder-length, slightly messy .webp",
             "profile": emily_persona,
             "additional_info": """
             **Profile:** Emily has not prioritized retirement savings and finds herself significantly behind in her retirement planning. She has some debt and limited knowledge of investment options. Emily is starting to realize the importance of planning for retirement but feels overwhelmed and unsure about how to catch up.
