@@ -95,24 +95,202 @@ def load_image(image_path):
         return None
 
 def home():
-    st.title(home_content["title"])
-    st.subheader(home_content["subtitle"])
-    st.write(home_content["welcome"])
-    st.markdown(home_content["intro"])
-    
-    st.subheader(home_content["key_features"]["title"])
-    for item in home_content["key_features"]["items"]:
-        st.markdown(f"* {item}")
-    
-    st.subheader(home_content["value"]["title"])
-    for item in home_content["value"]["items"]:
-        st.markdown(f"* {item}")
-    
-    st.subheader(home_content["why_choose"]["title"])
-    for item in home_content["why_choose"]["items"]:
-        st.markdown(f"* {item}")
-    
-    if st.button("Go to Questionnaire"):
+    st.markdown("""
+    <style>
+    .big-font {
+        font-size: 50px !important;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .subtitle {
+        font-size: 24px;
+        color: white;
+        margin-bottom: 30px;
+    }
+    .section-header {
+        font-size: 28px;
+        font-weight: bold;
+        color: white;
+        margin-top: 40px;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    .feature-item, .value-item {
+        background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    .feature-item:hover, .value-item:hover {
+        background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+        transform: translateY(-5px);
+        box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+    }
+    .feature-title, .value-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #90caf9;
+        margin-bottom: 10px;
+    }
+    .feature-content, .value-content {
+        color: #e0e0e0;
+    }
+    .cta-button {
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 5px;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .cta-button:hover {
+        background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .container {
+        background: linear-gradient(135deg, #2a2a2a 0%, #3c3c3c 100%);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 30px 0;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .container h3 {
+        color: white;
+    }
+    .container p {
+        color: #e0e0e0;
+    }
+    a {
+        color: #90caf9;
+        text-decoration: none;
+    }
+    a:hover {
+        color: #bbdefb;
+        text-decoration: underline;
+    }
+    .stApp {
+        color: white !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Header
+    st.markdown('<p class="big-font">Retirement Planning Simulator</p>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Enhance your skills as a financial advisor through interactive simulations</p>', unsafe_allow_html=True)
+
+    # Welcome message
+    st.markdown("""
+    <div class="container">
+        <h3>Welcome, Financial Advisor!</h3>
+        <p>Get ready to sharpen your retirement planning skills with our state-of-the-art simulation platform. 
+        Engage with diverse client personas, tackle real-world scenarios, and receive instant feedback to refine your approach.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Key Features
+    st.markdown('<p class="section-header">Key Features</p>', unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        <div class="feature-item">
+            <p class="feature-title">🎭 Realistic Client Personas</p>
+            <p class="feature-content">Interact with diverse client profiles, each with unique financial situations and retirement goals.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="feature-item">
+            <p class="feature-title">🧠 AI-Powered Feedback</p>
+            <p class="feature-content">Receive real-time advice from our AI mentor to improve your client interactions and strategy.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div class="feature-item">
+            <p class="feature-title">📊 Performance Evaluation</p>
+            <p class="feature-content">Get comprehensive assessments of your performance, highlighting strengths and areas for improvement.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="feature-item">
+            <p class="feature-title">🔄 Iterative Learning</p>
+            <p class="feature-content">Practice multiple scenarios to refine your skills and adapt to various client needs.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Value Proposition
+    st.markdown('<p class="section-header">Value for Financial Advisors</p>', unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        <div class="value-item">
+            <p class="value-title">💼 Enhance Client Satisfaction</p>
+            <p class="value-content">Improve your ability to deliver personalized, effective retirement advice that meets your clients' unique needs and goals.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="value-item">
+            <p class="value-title">🏆 Stay Competitive</p>
+            <p class="value-content">Stay ahead in the competitive advisory landscape by continuously updating your knowledge and skills.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="value-item">
+            <p class="value-title">🤝 Build Strong Relationships</p>
+            <p class="value-content">Develop stronger relationships with your clients by understanding their concerns and providing tailored solutions.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div class="value-item">
+            <p class="value-title">🚀 Boost Professional Confidence</p>
+            <p class="value-content">Gain confidence in your advisory skills by practicing in a risk-free environment with varied client scenarios.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="value-item">
+            <p class="value-title">📈 Drive Better Outcomes</p>
+            <p class="value-content">Help your clients achieve their retirement dreams by utilizing the latest strategies and tools.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="value-item">
+            <p class="value-title">📣 Earn More Referrals</p>
+            <p class="value-content">Satisfied clients are more likely to refer their friends and family, helping you grow your practice.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Why Choose Our Simulator
+    st.markdown('<p class="section-header">Why Choose Our Simulator?</p>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="container">
+        <ul>
+            <li><strong>Realistic Training Environment:</strong> Simulate real-world advisory sessions with diverse client scenarios.</li>
+            <li><strong>Continuous Learning:</strong> Stay updated with the latest retirement planning strategies and best practices.</li>
+            <li><strong>Flexible and Convenient:</strong> Train at your own pace and revisit modules as needed.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Call to Action
+    st.markdown('<p class="section-header">Ready to Start?</p>', unsafe_allow_html=True)
+    if st.button("Begin Simulation", key="start_simulation", help="Click to start your retirement planning simulation", type="primary"):
         st.session_state.page = "Questionnaire"
         st.experimental_rerun()
 
@@ -827,13 +1005,26 @@ Conclusion:
     else:
         st.write("Please select a client to start the conversation.")
 
+st.markdown("""
+    <style>
+    [data-testid="stSidebar"] [data-testid="stImage"] {
+        margin-bottom: 50px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Sidebar
 with st.sidebar:
+    logo = load_image("img/Theoremlabs_logo copy.png")
+    if logo:
+        st.image(logo, width=250) 
+        
+        
+        
     selected = option_menu(
-        menu_title="Navigation",
+        menu_title="TheoremLabs",
         options=["Simulation"],
         icons=["play-circle"],
-        menu_icon="cast",
         default_index=0,
     )
 
