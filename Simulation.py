@@ -211,8 +211,8 @@ def home():
     """, unsafe_allow_html=True)
 
     # Header
-    st.markdown('<p class="big-font">Retirement Planning Simulator</p>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">Enhance your skills as a financial advisor through interactive simulations</p>', unsafe_allow_html=True)
+    st.markdown('<p class="big-font">Client Interaction Simulator</p>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Simulator for Client Interactions. Empowering Advisors</p>', unsafe_allow_html=True)
 
     # Welcome message
     st.markdown("""
