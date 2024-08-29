@@ -98,52 +98,57 @@ def home():
     st.markdown("""
     <style>
     .big-font {
-        font-size: 50px !important;
+        font-size: 40px !important;
         font-weight: bold;
         color: white;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
     .subtitle {
-        font-size: 24px;
+        font-size: 20px;
         color: white;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
     .section-header {
-        font-size: 28px;
+        font-size: 24px;
         font-weight: bold;
         color: white;
-        margin-top: 40px;
-        margin-bottom: 20px;
+        margin-top: 30px;
+        margin-bottom: 15px;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
     .feature-item, .value-item {
         background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 3px 5px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
     .feature-item:hover, .value-item:hover {
         background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
-        transform: translateY(-5px);
-        box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
     .feature-title, .value-title {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: bold;
         color: #90caf9;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
     .feature-content, .value-content {
         color: #e0e0e0;
+        flex-grow: 1;
+        font-size: 14px;
     }
     .cta-button {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
         border-radius: 5px;
-        padding: 12px 24px;
+        padding: 10px 20px;
         background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
         color: white;
         border: none;
@@ -156,16 +161,18 @@ def home():
     }
     .container {
         background: linear-gradient(135deg, #2a2a2a 0%, #3c3c3c 100%);
-        padding: 20px;
-        border-radius: 10px;
-        margin: 30px 0;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        box-shadow: 0 3px 5px rgba(0,0,0,0.1);
     }
     .container h3 {
         color: white;
+        font-size: 20px;
     }
-    .container p {
+    .container p, .container ul {
         color: #e0e0e0;
+        font-size: 14px;
     }
     a {
         color: #90caf9;
@@ -177,6 +184,16 @@ def home():
     }
     .stApp {
         color: white !important;
+    }
+    .row-container {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -7px;
+    }
+    .col-container {
+        flex: 1 1 50%;
+        padding: 7px;
+        box-sizing: border-box;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -196,85 +213,83 @@ def home():
 
     # Key Features
     st.markdown('<p class="section-header">Key Features</p>', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("""
-        <div class="feature-item">
-            <p class="feature-title">🎭 Realistic Client Personas</p>
-            <p class="feature-content">Interact with diverse client profiles, each with unique financial situations and retirement goals.</p>
+    st.markdown("""
+    <div class="row-container">
+        <div class="col-container">
+            <div class="feature-item">
+                <p class="feature-title">🎭 Realistic Client Personas</p>
+                <p class="feature-content">Interact with diverse client profiles, each with unique financial situations and retirement goals.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="feature-item">
-            <p class="feature-title">🧠 AI-Powered Feedback</p>
-            <p class="feature-content">Receive real-time advice from our AI mentor to improve your client interactions and strategy.</p>
+        <div class="col-container">
+            <div class="feature-item">
+                <p class="feature-title">🧠 AI-Powered Feedback</p>
+                <p class="feature-content">Receive real-time advice from our AI mentor to improve your client interactions and strategy.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-        <div class="feature-item">
-            <p class="feature-title">📊 Performance Evaluation</p>
-            <p class="feature-content">Get comprehensive assessments of your performance, highlighting strengths and areas for improvement.</p>
+    </div>
+    <div class="row-container">
+        <div class="col-container">
+            <div class="feature-item">
+                <p class="feature-title">📊 Performance Evaluation</p>
+                <p class="feature-content">Get comprehensive assessments of your performance, highlighting strengths and areas for improvement.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="feature-item">
-            <p class="feature-title">🔄 Iterative Learning</p>
-            <p class="feature-content">Practice multiple scenarios to refine your skills and adapt to various client needs.</p>
+        <div class="col-container">
+            <div class="feature-item">
+                <p class="feature-title">🔄 Iterative Learning</p>
+                <p class="feature-content">Practice multiple scenarios to refine your skills and adapt to various client needs.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
     # Value Proposition
     st.markdown('<p class="section-header">Value for Financial Advisors</p>', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("""
-        <div class="value-item">
-            <p class="value-title">💼 Enhance Client Satisfaction</p>
-            <p class="value-content">Improve your ability to deliver personalized, effective retirement advice that meets your clients' unique needs and goals.</p>
+    st.markdown("""
+    <div class="row-container">
+        <div class="col-container">
+            <div class="value-item">
+                <p class="value-title">💼 Enhance Client Satisfaction</p>
+                <p class="value-content">Improve your ability to deliver personalized, effective retirement advice that meets your clients' unique needs and goals.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="value-item">
-            <p class="value-title">🏆 Stay Competitive</p>
-            <p class="value-content">Stay ahead in the competitive advisory landscape by continuously updating your knowledge and skills.</p>
+        <div class="col-container">
+            <div class="value-item">
+                <p class="value-title">🚀 Boost Professional Confidence</p>
+                <p class="value-content">Gain confidence in your advisory skills by practicing in a risk-free environment with varied client scenarios.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="value-item">
-            <p class="value-title">🤝 Build Strong Relationships</p>
-            <p class="value-content">Develop stronger relationships with your clients by understanding their concerns and providing tailored solutions.</p>
+    </div>
+    <div class="row-container">
+        <div class="col-container">
+            <div class="value-item">
+                <p class="value-title">🏆 Stay Competitive</p>
+                <p class="value-content">Stay ahead in the competitive advisory landscape by continuously updating your knowledge and skills.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-        <div class="value-item">
-            <p class="value-title">🚀 Boost Professional Confidence</p>
-            <p class="value-content">Gain confidence in your advisory skills by practicing in a risk-free environment with varied client scenarios.</p>
+        <div class="col-container">
+            <div class="value-item">
+                <p class="value-title">📈 Drive Better Outcomes</p>
+                <p class="value-content">Help your clients achieve their retirement dreams by utilizing the latest strategies and tools.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="value-item">
-            <p class="value-title">📈 Drive Better Outcomes</p>
-            <p class="value-content">Help your clients achieve their retirement dreams by utilizing the latest strategies and tools.</p>
+    </div>
+    <div class="row-container">
+        <div class="col-container">
+            <div class="value-item">
+                <p class="value-title">🤝 Build Strong Relationships</p>
+                <p class="value-content">Develop stronger relationships with your clients by understanding their concerns and providing tailored solutions.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="value-item">
-            <p class="value-title">📣 Earn More Referrals</p>
-            <p class="value-content">Satisfied clients are more likely to refer their friends and family, helping you grow your practice.</p>
+        <div class="col-container">
+            <div class="value-item">
+                <p class="value-title">📣 Earn More Referrals</p>
+                <p class="value-content">Satisfied clients are more likely to refer their friends and family, helping you grow your practice.</p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
     # Why Choose Our Simulator
     st.markdown('<p class="section-header">Why Choose Our Simulator?</p>', unsafe_allow_html=True)
