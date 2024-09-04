@@ -17,9 +17,10 @@ import io
 import re
 import os
 from dotenv import load_dotenv
+st.set_page_config(layout="wide")
 from create_persona import create_persona_form, display_personas, add_persona
 
-st.set_page_config(layout="wide")
+
 
 if 'personas' not in st.session_state:
     st.session_state.personas = {}
