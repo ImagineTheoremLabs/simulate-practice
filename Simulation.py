@@ -17,8 +17,12 @@ import io
 import re
 import os
 from dotenv import load_dotenv
+from create_persona import create_persona_form, display_personas, add_persona
 
 st.set_page_config(layout="wide")
+
+if 'personas' not in st.session_state:
+    st.session_state.personas = {}
 
 st.markdown("""
 <style>
@@ -319,7 +323,7 @@ def home():
     st.markdown('<p class="section-header">Ready to Start?</p>', unsafe_allow_html=True)
     if st.button("Begin Simulation", key="start_simulation", help="Click to start your retirement planning simulation", type="primary"):
         st.session_state.page = "Questionnaire"
-        st.experimental_rerun()
+        st.rerun()
 
 
 def questionnaire():
@@ -419,7 +423,7 @@ def questionnaire():
             # Add a small delay before changing the page
             time.sleep(2)
             st.session_state.page = "Client"
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.warning("Please answer all questions before submitting.")
 
@@ -634,6 +638,17 @@ def client_personas():
             """
         }
     ]
+    all_personas = client_personas + [
+        {
+            "name": name,
+            "description": persona["description"],
+            "image": "img/default_persona_image.webp",  # Use a default image for custom personas
+            "profile": persona["profile"],
+            "additional_info": f"**Custom Persona:** {persona['description']}"
+        }
+        for name, persona in st.session_state.personas.items()
+    ]
+
 
 
     def clean_response(text):
@@ -858,7 +873,7 @@ Conclusion:
     if not st.session_state.chat_started:
         st.write("Choose one of the following clients to begin your retirement planning simulation:")
         
-        for i, persona in enumerate(client_personas):
+        for i, persona in enumerate(all_personas):  # Use all_personas here
             with st.container():
                 st.subheader(f"{persona['name']} - {persona['description']}")
                 col1, col2 = st.columns([1, 2])
@@ -874,7 +889,7 @@ Conclusion:
                     st.session_state.chat_id = str(uuid.uuid4())
                     st.session_state.messages = []
                     st.session_state.current_persona = persona
-                    st.experimental_rerun()
+                    st.rerun()
             
             # Add a divider between client profiles
             st.divider()
@@ -889,11 +904,11 @@ Conclusion:
                 st.session_state.messages = []
                 st.session_state.chat_started = False
                 st.session_state.current_persona = None
-                st.experimental_rerun()
+                st.rerun()
             
             if st.button("End Chat", key="end_btn"):
                 st.session_state.chat_ended = True
-                st.experimental_rerun()
+                st.rerun()
         
         # Main chat interface
         st.subheader(f"Chatting with {st.session_state.current_persona['name']}")
@@ -1028,7 +1043,7 @@ Conclusion:
                 st.session_state.chat_started = False
                 st.session_state.current_persona = None
                 st.session_state.chat_ended = False
-                st.experimental_rerun()
+                st.rerun()
 
     else:
         st.write("Please select a client to start the conversation.")
@@ -1050,11 +1065,11 @@ with st.sidebar:
         
         
     selected = option_menu(
-        menu_title="TheoremLabs",
-        options=["Simulation"],
-        icons=["play-circle"],
-        default_index=0,
-    )
+    menu_title="TheoremLabs",
+    options=["Simulation", "Create Persona"],
+    icons=["play-circle", "person-plus"],
+    default_index=0,
+)
 
 # Main app logic
 if selected == "Simulation":
@@ -1064,6 +1079,15 @@ if selected == "Simulation":
         questionnaire()
     elif st.session_state.page == "Client":
         client_personas()
+elif selected == "Create Persona":
+    st.title("Create and Manage Personas")
+    tab1, tab2 = st.tabs(["Create New Persona", "View Existing Personas"])
+    
+    with tab1:
+        create_persona_form()
+    
+    with tab2:
+        display_personas()
 
-# Close the database connection
+# Close the database conneection
 conn.close()
