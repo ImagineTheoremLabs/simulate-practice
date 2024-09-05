@@ -216,7 +216,7 @@ def home():
     """, unsafe_allow_html=True)
 
     # Header
-    st.markdown('<p class="big-font">Client Interaction Simulator</p>', unsafe_allow_html=True)
+    st.markdown('<p class="big-font">RolePlay.app</p>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle">Simulator for Client Interactions. Empowering Advisors</p>', unsafe_allow_html=True)
 
     # Welcome message
@@ -1067,20 +1067,20 @@ with st.sidebar:
         
     selected = option_menu(
     menu_title="TheoremLabs",
-    options=["Simulation", "Create Persona"],
+    options=["RolePlay", "RoleBuilder"],
     icons=["play-circle", "person-plus"],
     default_index=0,
 )
 
 # Main app logic
-if selected == "Simulation":
+if selected == "RolePlay":
     if st.session_state.page == "Home":
         home()
     elif st.session_state.page == "Questionnaire":
         questionnaire()
     elif st.session_state.page == "Client":
         client_personas()
-elif selected == "Create Persona":
+elif selected == "RoleBuilder":
     st.title("Create and Manage Personas")
     tab1, tab2 = st.tabs(["Create New Persona", "View Existing Personas"])
     
