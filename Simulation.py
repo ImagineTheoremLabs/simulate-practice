@@ -19,6 +19,7 @@ import os
 from dotenv import load_dotenv
 st.set_page_config(layout="wide")
 from create_persona import create_persona_form, display_personas, add_persona
+import scenario_challenge
 
 
 
@@ -1062,15 +1063,13 @@ with st.sidebar:
     logo = load_image("img/Theoremlabs_logo copy.png")
     if logo:
         st.image(logo, width=250) 
-        
-        
-        
+            
     selected = option_menu(
-    menu_title="TheoremLabs",
-    options=["RolePlay", "RoleBuilder"],
-    icons=["play-circle", "person-plus"],
-    default_index=0,
-)
+        menu_title="TheoremLabs",
+        options=["RolePlay", "RoleBuilder", "Scenario Challenge"],  # Added "Scenario Challenge"
+        icons=["play-circle", "person-plus", "list-task"],  # Choose an appropriate icon
+        default_index=0,
+    )
 
 # Main app logic
 if selected == "RolePlay":
@@ -1089,6 +1088,8 @@ elif selected == "RoleBuilder":
     
     with tab2:
         display_personas()
+elif selected == "Scenario Challenge":
+    scenario_challenge.scenario_challenge()  # Call the Scenario/Challenge feature
 
-# Close the database conneection
+# Close the database connection
 conn.close()
