@@ -400,7 +400,7 @@ def questionnaire():
 
     # Training Goals
     st.subheader("Training Goals")
-    goals = st.multiselect("1. What are your primary goals for using the Retirement Readiness Simulator? (Select all that apply)",
+    goals = st.multiselect("1. What are your primary goals for using the Simulator? (Select all that apply)",
                            ["Improve overall knowledge of retirement planning",
                             "Enhance client engagement techniques",
                             "Practice handling different client scenarios",
@@ -1125,13 +1125,13 @@ with st.sidebar:
             
     selected = option_menu(
         menu_title="TheoremLabs",
-        options=["RolePlay", "PersonaBuilder", "Scenario Challenge", "Test Mode", "Progress Dashboard"],
+        options=["Kirdar.ai", "PersonaBuilder", "Scenario Challenge", "Test Mode", "Progress Dashboard"],
         icons=["play-circle", "person-plus", "list-task", "speedometer2", "graph-up"],
         default_index=0,
     )
 
 # Main app logic
-if selected == "RolePlay":
+if selected == "Kirdar.ai":
     if st.session_state.page == "Home":
         home()
     elif st.session_state.page == "Questionnaire":
