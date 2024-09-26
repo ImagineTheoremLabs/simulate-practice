@@ -223,7 +223,7 @@ def home():
     """, unsafe_allow_html=True)
 
     # Header
-    st.markdown('<p class="big-font">RolePlay.app</p>', unsafe_allow_html=True)
+    st.markdown('<p class="big-font">Kirdar.ai</p>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle">Simulator for Client Interactions. Empowering Advisors</p>', unsafe_allow_html=True)
 
     # Welcome message
@@ -1125,7 +1125,7 @@ with st.sidebar:
             
     selected = option_menu(
         menu_title="TheoremLabs",
-        options=["RolePlay", "RoleBuilder", "Scenario Challenge", "Test Mode", "Progress Dashboard"],
+        options=["RolePlay", "PersonaBuilder", "Scenario Challenge", "Test Mode", "Progress Dashboard"],
         icons=["play-circle", "person-plus", "list-task", "speedometer2", "graph-up"],
         default_index=0,
     )
@@ -1138,7 +1138,7 @@ if selected == "RolePlay":
         questionnaire()
     elif st.session_state.page == "Client":
         client_personas()
-elif selected == "RoleBuilder":
+elif selected == "PersonaBuilder":
     st.title("Create and Manage Personas")
     tab1, tab2, tab3 = st.tabs(["Create New Persona", "AI Create Persona", "View Existing Personas"])
 
