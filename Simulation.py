@@ -23,11 +23,26 @@ import scenario_challenge
 from test_mode import TestModeManager, configure_genai
 from create_persona import create_persona_form, display_personas, add_persona, ai_create_persona_form
 
-
 def get_test_manager():
     if 'test_manager' not in st.session_state:
         st.session_state.test_manager = TestModeManager()
     return st.session_state.test_manager
+
+def load_image(image_path):
+    try:
+        return Image.open(image_path)
+    except FileNotFoundError:
+        st.error(f"Image file {image_path} not found.")
+        return None
+
+def crop_to_square(image):
+    width, height = image.size
+    size = min(width, height)
+    left = (width - size) / 2
+    top = (height - size) / 2
+    right = (width + size) / 2
+    bottom = (height + size) / 2
+    return image.crop((left, top, right, bottom))
 
 if 'personas' not in st.session_state:
     st.session_state.personas = {}
@@ -916,14 +931,15 @@ def client_personas():
     if not st.session_state.chat_started:
         st.write("Choose one of the following clients to begin your retirement planning simulation:")
         
-        for i, persona in enumerate(all_personas):  # Use all_personas here
+        for i, persona in enumerate(all_personas):
             with st.container():
                 st.subheader(f"{persona['name']} - {persona['description']}")
-                col1, col2 = st.columns([1, 2])
+                col1, col2 = st.columns([1, 3])  # Keep the adjusted column ratio
                 with col1:
                     img = load_image(persona['image'])
                     if img:
-                        st.image(img, use_column_width=True)
+                        square_img = crop_to_square(img)
+                        st.image(square_img, width=250)  # Keep the width at 150 pixels
                 with col2:
                     st.markdown(persona['additional_info'])
                 
