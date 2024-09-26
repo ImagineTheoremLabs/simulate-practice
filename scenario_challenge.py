@@ -3,29 +3,29 @@
 import streamlit as st
 import sqlite3
 import json
-import time
 import uuid
 import re
-from PIL import Image
 from dotenv import load_dotenv
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import os
 
-# Load environment variables from .env file
+# Load environment variables from .env file (if needed for other purposes)
 load_dotenv()
 
-# Fetch the API key from the environment
+# **1. API Key Configuration**
+# Keep the API key as provided
 GOOGLE_API_KEY = "AIzaSyCQMi_h02TMadAhW8ubeCI419vTv3UrnLE"
 
 if not GOOGLE_API_KEY:
-    st.error("Google API key not found. Please make sure it's set in the .env file.")
+    st.error("Google API key not found. Please make sure it's set in the script.")
     st.stop()
 
 # Configure the Gemini API
 genai.configure(api_key=GOOGLE_API_KEY)
 
-# Initialize database connection
+
+# **2. Database Connection and Setup**
 def get_db_connection():
     conn = sqlite3.connect('responses.db')
     c = conn.cursor()
@@ -39,7 +39,7 @@ def get_db_connection():
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
                 )''')
     conn.commit()
-    
+
     # Attempt to add 'conversation_history' column
     try:
         c.execute('ALTER TABLE scenarios ADD COLUMN conversation_history TEXT')
@@ -47,7 +47,7 @@ def get_db_connection():
     except sqlite3.OperationalError:
         # Column already exists
         pass
-    
+
     # Attempt to add 'feedback' column
     try:
         c.execute('ALTER TABLE scenarios ADD COLUMN feedback TEXT')
@@ -55,18 +55,78 @@ def get_db_connection():
     except sqlite3.OperationalError:
         # Column already exists
         pass
-    
+
     return conn
 
-# Function to load image
-def load_image(image_path):
+
+# **3. Helper Functions**
+# Function to load CSS
+def load_local_css(file_path):
     try:
-        return Image.open(image_path)
+        with open(file_path) as f:
+            st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
     except FileNotFoundError:
-        st.error(f"Image file {image_path} not found.")
+        st.error(f"CSS file {file_path} not found.")
         return None
 
-# Sample Scenarios
+
+# Function to clean response text
+def clean_response(text):
+    # Remove asterisks and other formatting characters
+    text = re.sub(r'[*_~`]', '', text)
+
+    # Replace various types of dashes with regular hyphens
+    text = re.sub(r'[–—−]', '-', text)
+
+    # Add spaces after punctuation if missing
+    text = re.sub(r'([.,!?;:])(?=\S)', r'\1 ', text)
+
+    # Add spaces between words if missing (camel case split)
+    text = re.sub(r'([a-z])([A-Z])', r'\1 \2', text)
+
+    # Add spaces between numbers and words if missing
+    text = re.sub(r'(\d)([a-zA-Z])', r'\1 \2', text)
+    text = re.sub(r'([a-zA-Z])(\d)', r'\1 \2', text)
+
+    # Remove extra spaces
+    text = re.sub(r'\s+', ' ', text)
+
+    # Fix spacing around apostrophes
+    text = re.sub(r'\s\'', "'", text)
+    text = re.sub(r'\'\s', "' ", text)
+
+    # Remove repeated phrases (case insensitive)
+    words = text.split()
+    cleaned_words = []
+    for i, word in enumerate(words):
+        if i == 0 or word.lower() != words[i - 1].lower():
+            cleaned_words.append(word)
+
+    # Rejoin the words
+    cleaned_text = ' '.join(cleaned_words)
+
+    return cleaned_text.strip()
+
+
+# Function to strip markdown
+def strip_markdown(text):
+    """
+    Remove markdown formatting from text.
+    """
+    # Remove markdown headers
+    text = re.sub(r'#+\s+', '', text)
+    # Remove bold and italics
+    text = re.sub(r'[*_]{1,3}([^*_]+)[*_]{1,3}', r'\1', text)
+    # Remove links
+    text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
+    # Remove images
+    text = re.sub(r'!\[([^\]]*)\]\([^)]+\)', r'\1', text)
+    # Remove inline code
+    text = re.sub(r'`([^`]+)`', r'\1', text)
+    return text
+
+
+# **4. Sample Scenarios**
 SAMPLE_SCENARIOS = [
     {
         "title": "High-Risk Investor with Impending Life Changes",
@@ -86,96 +146,15 @@ SAMPLE_SCENARIOS = [
     }
 ]
 
-def clean_response(text):
-    # Remove asterisks and other formatting characters
-    text = re.sub(r'[*_~`]', '', text)
-    
-    # Replace various types of dashes with regular hyphens
-    text = re.sub(r'[–—−]', '-', text)
-    
-    # Add spaces after punctuation if missing
-    text = re.sub(r'([.,!?;:])(?=\S)', r'\1 ', text)
-    
-    # Add spaces between words if missing (camel case split)
-    text = re.sub(r'([a-z])([A-Z])', r'\1 \2', text)
-    
-    # Add spaces between numbers and words if missing
-    text = re.sub(r'(\d)([a-zA-Z])', r'\1 \2', text)
-    text = re.sub(r'([a-zA-Z])(\d)', r'\1 \2', text)
-    
-    # Remove extra spaces
-    text = re.sub(r'\s+', ' ', text)
-    
-    # Fix spacing around apostrophes
-    text = re.sub(r'\s\'', "'", text)
-    text = re.sub(r'\'\s', "' ", text)
-    
-    # Remove repeated phrases (case insensitive)
-    words = text.split()
-    cleaned_words = []
-    for i, word in enumerate(words):
-        if i == 0 or word.lower() != words[i-1].lower():
-            cleaned_words.append(word)
-    
-    # Rejoin the words
-    cleaned_text = ' '.join(cleaned_words)
-    
-    return cleaned_text.strip()
 
-def strip_markdown(text):
-    """
-    Remove markdown formatting from text.
-    """
-    # Remove markdown headers
-    text = re.sub(r'#+\s+', '', text)
-    # Remove bold and italics
-    text = re.sub(r'[*_]{1,3}([^*_]+)[*_]{1,3}', r'\1', text)
-    # Remove links
-    text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
-    # Remove images
-    text = re.sub(r'!\[([^\]]*)\]\([^)]+\)', r'\1', text)
-    # Remove inline code
-    text = re.sub(r'`([^`]+)`', r'\1', text)
-    return text
-
+# **5. Main Scenario Challenge Function**
 def scenario_challenge():
-    st.title("Scenario/Challenge Feature")
-    st.markdown("""
-    <style>
-    .big-font {
-        font-size:20px !important;
-        font-weight: bold;
-    }
-    .stRadio > label {
-        font-weight: bold;
-        color: #3366cc;
-    }
-    .stTextInput > label {
-        font-weight: bold;
-        color: #3366cc;
-    }
-    .submit-btn {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        cursor: pointer;
-        border-radius: 4px;
-        border: none;
-    }
-    .feedback-container {
-        background-color: #2c2c2c;
-        padding: 15px;
-        border-radius: 8px;
-        color: #e0e0e0;
-        font-size: 16px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    # Get the current directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Define paths for CSS
+    css_path = os.path.join(current_dir, "styles.css")
+    load_local_css(css_path)
 
     conn = get_db_connection()
     c = conn.cursor()
@@ -190,25 +169,47 @@ def scenario_challenge():
     if 'feedback' not in st.session_state:
         st.session_state.feedback = ""
 
-    st.subheader("Choose a Scenario to Begin Your Challenge")
+    st.title("Financial Scenario Challenge")
+    st.markdown("---")
 
-    # Display available scenarios
-    for idx, scenario in enumerate(SAMPLE_SCENARIOS):
-        with st.expander(scenario["title"], expanded=False):
-            st.write(scenario["description"])
-            if st.button(f"Start Challenge {idx+1}", key=f"start_{idx}"):
-                st.session_state.selected_scenario = scenario
-                st.session_state.conversation_history = []
-                st.session_state.feedback = ""
-                st.rerun()
+    # **1. Display Available Scenarios**
+    st.subheader("Available Scenarios")
+    num_columns = 2  # Number of columns per row
+    for i in range(0, len(SAMPLE_SCENARIOS), num_columns):
+        cols = st.columns(num_columns)
+        for j in range(num_columns):
+            if i + j < len(SAMPLE_SCENARIOS):
+                scenario = SAMPLE_SCENARIOS[i + j]
+                with cols[j]:
+                    st.markdown(f'<div class="scenario-card">', unsafe_allow_html=True)
 
-    # If a scenario is selected, display it and provide input for advisor's response
+                    # **Removed Image Loading Here**
+                    # If you decide to add images later, you can uncomment and adjust the code below:
+                    # image_path = os.path.join(current_dir, "img", f"scenario_{i + j}.png")  # Example image path
+                    # img = load_image(image_path)
+                    # if img:
+                    #     st.image(img, use_column_width=True)
+
+                    st.markdown(f'<div class="scenario-title">{scenario["title"]}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="scenario-description">{scenario["description"]}</div>',
+                                unsafe_allow_html=True)
+
+                    # **2. Start Challenge Button Without `css_class`**
+                    if st.button("Start Challenge", key=f"start_{i + j}"):
+                        st.session_state.selected_scenario = scenario
+                        st.session_state.conversation_history = []
+                        st.session_state.feedback = ""
+                        st.rerun()
+
+                    st.markdown('</div>', unsafe_allow_html=True)
+
+    # **2. Display Selected Scenario and Conversation**
     if st.session_state.selected_scenario:
         st.markdown("---")
-        st.subheader(f"Scenario: {st.session_state.selected_scenario['title']}")
-        st.write(st.session_state.selected_scenario["description"])
+        st.subheader(f"**Scenario:** {st.session_state.selected_scenario['title']}")
+        st.markdown(f"*{st.session_state.selected_scenario['description']}*")
 
-        st.markdown("### Conversation:")
+        st.markdown("### **Conversation:**")
         conversation_container = st.container()
 
         # Display conversation history
@@ -219,65 +220,72 @@ def scenario_challenge():
                 elif message["role"] == "client":
                     st.markdown(f"**Client:** {message['content']}")
 
-        # Input for advisor's message
+        # **3. Input for Advisor's Message**
         advisor_input = st.text_input("Your Message:", key="advisor_input")
 
-        if st.button("Send", key="send_btn"):
-            if advisor_input.strip() == "":
-                st.warning("Please enter a message before sending.")
-            else:
-                # Append advisor's message to the conversation history
-                st.session_state.conversation_history.append({"role": "advisor", "content": advisor_input})
-                
-                # Generate client's response using Gemini API
-                client_response = generate_client_response(st.session_state.conversation_history, st.session_state.selected_scenario)
-                
-                # Append client's response to the conversation history
-                st.session_state.conversation_history.append({"role": "client", "content": client_response})
-                
+        # **4. Button Group for Send and End Challenge**
+        st.markdown('<div class="button-group">', unsafe_allow_html=True)
+        send, end = st.columns(2)
+        with send:
+            if st.button("📨 Send", key="send_btn"):
+                if advisor_input.strip() == "":
+                    st.warning("Please enter a message before sending.")
+                else:
+                    # Append advisor's message to the conversation history
+                    st.session_state.conversation_history.append({"role": "advisor", "content": advisor_input})
+
+                    # Generate client's response using Gemini API
+                    client_response = generate_client_response(
+                        st.session_state.conversation_history,
+                        st.session_state.selected_scenario
+                    )
+
+                    # Append client's response to the conversation history
+                    st.session_state.conversation_history.append({"role": "client", "content": client_response})
+
+                    st.rerun()
+        with end:
+            if st.button("🛑 End Challenge", key="end_challenge_btn"):
+                # Generate feedback based on the conversation
+                with st.spinner("Generating feedback..."):
+                    feedback = generate_feedback(st.session_state.conversation_history)
+                    st.session_state.feedback = feedback
+
+                # Save the scenario, conversation, and feedback to the database
+                scenario_id = str(uuid.uuid4())
+                conversation_json = json.dumps(st.session_state.conversation_history)
+                c.execute("""
+                    INSERT INTO scenarios (id, title, description, conversation_history, feedback)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (scenario_id, st.session_state.selected_scenario['title'],
+                      st.session_state.selected_scenario['description'], conversation_json, feedback))
+                conn.commit()
+
+                st.success("Challenge ended. Feedback generated.")
                 st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        # Provide feedback after the conversation ends
-        if st.button("End Challenge", key="end_challenge_btn"):
-            # Generate feedback based on the conversation
-            with st.spinner("Generating feedback..."):
-                feedback = generate_feedback(st.session_state.conversation_history)
-                st.session_state.feedback = feedback
-
-            # Save the scenario, conversation, and feedback to the database
-            scenario_id = str(uuid.uuid4())
-            conversation_json = json.dumps(st.session_state.conversation_history)
-            c.execute("""
-                INSERT INTO scenarios (id, title, description, conversation_history, feedback)
-                VALUES (?, ?, ?, ?, ?)
-            """, (scenario_id, st.session_state.selected_scenario['title'],
-                  st.session_state.selected_scenario['description'], conversation_json, feedback))
-            conn.commit()
-
-            st.success("Challenge ended. Feedback generated.")
-            st.rerun()
-
-        # Display feedback if available
+        # **5. Display Feedback if Available**
         if st.session_state.feedback:
             st.markdown("---")
-            st.markdown("### Feedback:")
+            st.markdown("### **Feedback:**")
             st.markdown(f'<div class="feedback-container">{st.session_state.feedback}</div>', unsafe_allow_html=True)
 
             # Option to reset the challenge
-            if st.button("Start New Challenge", key="new_challenge_btn"):
+            if st.button("🔄 Start New Challenge", key="new_challenge_btn"):
                 st.session_state.selected_scenario = None
                 st.session_state.conversation_history = []
                 st.session_state.feedback = ""
                 st.rerun()
 
         # Option to reset the challenge at any point
-        if st.button("Reset Challenge", key="reset_challenge_btn"):
+        if st.button("🔄 Reset Challenge", key="reset_challenge_btn"):
             st.session_state.selected_scenario = None
             st.session_state.conversation_history = []
             st.session_state.feedback = ""
             st.rerun()
 
-    # Display past challenges
+    # **3. Display Past Challenges**
     st.markdown("---")
     st.subheader("Your Past Challenges")
     c.execute("SELECT title, conversation_history, feedback, timestamp FROM scenarios ORDER BY timestamp DESC")
@@ -293,7 +301,7 @@ def scenario_challenge():
                     conversation = []
             else:
                 conversation = []
-            
+
             with st.expander(f"{title} - {timestamp}"):
                 st.markdown("**Conversation:**")
                 for message in conversation:
@@ -306,7 +314,7 @@ def scenario_challenge():
     else:
         st.info("You haven't completed any challenges yet.")
 
-    # Add a section to clear all past challenges
+    # **4. Manage Past Challenges**
     st.markdown("---")
     st.subheader("Manage Past Challenges")
 
@@ -314,7 +322,7 @@ def scenario_challenge():
         st.warning("⚠️ **This action will delete all past challenges. This cannot be undone.**")
         confirm = st.checkbox("Are you sure you want to delete all past challenges?")
         submit = st.form_submit_button("Clear All Past Challenges")
-        
+
         if submit:
             if confirm:
                 try:
@@ -327,21 +335,23 @@ def scenario_challenge():
             else:
                 st.warning("🛑 Deletion canceled. No challenges were deleted.")
 
-    # Close the database connection
+    # **5. Close the Database Connection**
     conn.close()
 
+
+# **6. Functions to Generate Responses and Feedback**
 def generate_client_response(conversation_history, scenario):
     """
     Generate a response from the client using the Gemini API based on the conversation history and scenario.
     """
     model = genai.GenerativeModel('gemini-1.5-flash')
-    
+
     # Prepare the conversation history
     chat_history = ""
     for message in conversation_history:
         role = "Financial Advisor" if message["role"] == "advisor" else "Client"
         chat_history += f"{role}: {message['content']}\n"
-    
+
     # Construct the prompt
     prompt = f"""
 You are roleplaying as a client in the following scenario:
@@ -352,9 +362,11 @@ Description: {scenario['description']}
 Conversation so far:
 {chat_history}
 
-Respond to the financial advisor's message as the client, maintaining your persona and scenario context.
+Financial Advisor: {conversation_history[-1]['content']}
+
+Respond as the client, maintaining your persona and scenario context.
 """
-    
+
     # Generate the response
     try:
         response = model.generate_content(
@@ -366,7 +378,7 @@ Respond to the financial advisor's message as the client, maintaining your perso
                 HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
             }
         )
-        
+
         if response.parts:
             raw_text = response.parts[0].text
             # Pre-process the text
@@ -380,18 +392,19 @@ Respond to the financial advisor's message as the client, maintaining your perso
     except Exception as e:
         return "I'm experiencing some issues and can't respond right now."
 
+
 def generate_feedback(conversation_history):
     """
     Generate feedback based on the conversation history using the Gemini API.
     """
     model = genai.GenerativeModel('gemini-1.5-flash')
-    
+
     # Prepare the conversation history
     chat_history = ""
     for message in conversation_history:
         role = "Financial Advisor" if message["role"] == "advisor" else "Client"
         chat_history += f"{role}: {message['content']}\n"
-    
+
     # Construct the revised prompt for feedback
     prompt = f"""
 You are an experienced financial advisor mentor. Review the following conversation between a financial advisor and a client, and provide constructive feedback to the advisor on their performance.
@@ -428,7 +441,7 @@ Provide your feedback in a clear and organized manner with the following section
 6. **Conclusion**
    - Final thoughts and summary.
 """
-    
+
     # Generate the feedback
     try:
         response = model.generate_content(
@@ -440,7 +453,7 @@ Provide your feedback in a clear and organized manner with the following section
                 HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
             }
         )
-        
+
         if response.parts:
             raw_text = response.parts[0].text
             cleaned_feedback = clean_response(raw_text)
@@ -451,6 +464,7 @@ Provide your feedback in a clear and organized manner with the following section
     except Exception as e:
         return "I'm experiencing some issues and can't generate feedback right now."
 
-# Run the Streamlit app
+
+# **7. Run the Streamlit App**
 if __name__ == "__main__":
     scenario_challenge()

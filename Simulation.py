@@ -20,8 +20,14 @@ from dotenv import load_dotenv
 st.set_page_config(layout="wide")
 from create_persona import create_persona_form, display_personas, add_persona
 import scenario_challenge
+from test_mode import TestModeManager, configure_genai
+from create_persona import create_persona_form, display_personas, add_persona, ai_create_persona_form
 
 
+def get_test_manager():
+    if 'test_manager' not in st.session_state:
+        st.session_state.test_manager = TestModeManager()
+    return st.session_state.test_manager
 
 if 'personas' not in st.session_state:
     st.session_state.personas = {}
@@ -588,16 +594,34 @@ def client_personas():
 
         # Mentor Agent persona
     mentor_persona = """
-    You are an experienced financial advisor mentor. Your role is to provide real-time advice to the financial advisor (the user) on how to conduct the assessment with the client and suggest improvements. You should:
+    You are an experienced financial advisor mentor. Your role is to provide guidance to the financial advisor (the user) on how to conduct the assessment with the client and suggest improvements. You should:
 
-    1. Observe the conversation between the financial advisor and the client.
-    2. Provide constructive feedback on the advisor's approach.
-    3. Suggest questions or topics that the advisor should explore further.
-    4. Offer tips on how to better address the client's concerns and goals.
-    5. Highlight any missed opportunities or areas where the advisor could dive deeper.
-    6. Provide guidance on best practices in retirement planning and client communication.
+        1. Observe the conversation between the financial advisor and the client.
+        2. Provide constructive feedback on the advisor's approach.
+        3. Suggest questions or topics that the advisor should explore further.
+        4. Offer tips on how to better address the client's concerns and goals.
+        5. Highlight any missed opportunities or areas where the advisor could dive deeper.
+        6. Provide guidance on best practices in retirement planning and client communication.
 
-    Your advice should be concise, actionable, and focused on improving the quality of the financial assessment and advice given to the client.
+        Additionally, ensure that your advice aligns with the following legal and regulatory responsibilities:
+
+        1. Fiduciary Duty: Remind the advisor to always act in the client's best interest, disclose any conflicts of interest, and avoid recommending products solely for personal gain.
+
+        2. Know Your Customer (KYC): Emphasize the importance of gathering comprehensive details about the client's financial situation, including employment status, annual income, risk tolerance, financial goals, and investment experience.
+
+        3. Compliance with SEC and FINRA: Encourage adherence to SEC guidelines and FINRA rules, including maintaining proper licensing and accurate record-keeping.
+
+        4. Suitability and Risk Tolerance: Stress the importance of assessing the client's risk tolerance, time horizon, and financial status before making investment recommendations.
+
+        5. Client Communication and Transparency: Advise on clear communication of risks, fees, and potential conflicts of interest. Encourage the use of plain language over complex jargon.
+
+        6. Privacy and Data Security: Remind the advisor of the importance of protecting client information and adhering to relevant data protection regulations.
+
+        7. Anti-Money Laundering (AML): Highlight the need to comply with AML regulations, including verifying client identity and reporting suspicious activity.
+
+        8. Documentation and Recordkeeping: Stress the importance of maintaining detailed records of client interactions, recommendations, and the rationale behind them.
+
+        Your advice should be concise, actionable, and focused on improving the quality of the financial assessment and advice given to the client, while ensuring compliance with legal and regulatory requirements.
     """
 
     evaluator_persona = """
@@ -744,7 +768,7 @@ def client_personas():
         else:
             return "I'm sorry, I couldn't generate a response at this time."
 
-    def get_mentor_advice(conversation_history):
+    def get_mentor_advice(conversation_history, custom_guidelines=None):
         model = genai.GenerativeModel('gemini-1.5-flash')
         
         # Prepare the conversation history
@@ -753,20 +777,34 @@ def client_personas():
             role = "Financial Advisor" if message["role"] == "user" else "Client"
             chat_history += f"{role}: {message['content']}\n"
         
+        if custom_guidelines:
+            guidelines = custom_guidelines
+        else:
+            guidelines = mentor_persona
+
         prompt = f"""
-        {mentor_persona}
+        {guidelines}
 
         Here's the recent conversation between the financial advisor and the client:
 
         {chat_history}
 
-        Based on this conversation, provide 5 bullet points of actionable advice to the financial advisor on how to improve their assessment and better address the client's needs. Format your response as follows:
+        Provide 5 detailed points of actionable advice to the financial advisor. For each point:
+        1. Start with a clear, actionable recommendation
+        2. Provide a brief explanation or rationale
+        3. If applicable, suggest a specific question or approach the advisor could use
 
-    • [Advice point 1]
-    • [Advice point 2]
-    • [Advice point 3]
-    • [Advice point 4]
-    • [Advice point 5]
+        Format your response as follows:
+
+        • [Main recommendation 1]
+        - Explanation: [Brief explanation]
+        - Suggested approach: [Specific question or method]
+
+        • [Main recommendation 2]
+        - Explanation: [Brief explanation]
+        - Suggested approach: [Specific question or method]
+
+        ... (and so on for all 5 points)
 
         Mentor Agent:
         """
@@ -782,13 +820,12 @@ def client_personas():
         )
         
         if response.parts:
-            return clean_response(response.parts[0].text)
+            advice = clean_response(response.parts[0].text)
+            return advice
         else:
-            return "I don't have any specific advice at this moment. Continue the conversation with the client."
+            return "• No specific advice at this moment.\n  - Continue the conversation with the client."
 
-
-
-    def get_evaluator_feedback(conversation_history):
+    def get_evaluator_feedback(conversation_history, custom_guidelines=None):
         model = genai.GenerativeModel('gemini-1.5-flash')
         
         # Prepare the entire conversation history
@@ -797,43 +834,47 @@ def client_personas():
             role = "Financial Advisor" if message["role"] == "user" else "Client"
             chat_history += f"{role}: {message['content']}\n"
         
+        if custom_guidelines:
+            guidelines = custom_guidelines
+        else:
+            guidelines = evaluator_persona
+
         prompt = f"""
-        {evaluator_persona}
+        {guidelines}
 
-Here's the entire conversation between the financial advisor and the client:
+        Here's the entire conversation between the financial advisor and the client:
 
-{chat_history}
+        {chat_history}
 
-Based on this conversation, provide a comprehensive evaluation of the financial advisor's performance. Use the following format:
+        Based on this conversation, provide a comprehensive evaluation of the financial advisor's performance. Use the following format:
 
-Overall Assessment:
-- [Brief overall assessment point 1]
-- [Brief overall assessment point 2]
+        Overall Assessment:
+        - [Brief overall assessment point 1]
+        - [Brief overall assessment point 2]
 
-Strengths:
-- [Strength 1]
-- [Strength 2]
-- [Strength 3]
+        Strengths:
+        - [Strength 1]
+        - [Strength 2]
+        - [Strength 3]
 
-Areas for Improvement:
-- [Area 1]: [Brief explanation]
-- [Area 2]: [Brief explanation]
-- [Area 3]: [Brief explanation]
+        Areas for Improvement:
+        - [Area 1]: [Brief explanation]
+        - [Area 2]: [Brief explanation]
+        - [Area 3]: [Brief explanation]
 
-Recommendations:
-- [Recommendation 1]: [Brief explanation]
-- [Recommendation 2]: [Brief explanation]
-- [Recommendation 3]: [Brief explanation]
+        Recommendations:
+        - [Recommendation 1]: [Brief explanation]
+        - [Recommendation 2]: [Brief explanation]
+        - [Recommendation 3]: [Brief explanation]
 
-Performance Ratings (out of 10):
-- Communication: [Rating]
-- Technical Knowledge: [Rating]
-- Client Rapport: [Rating]
-- Overall Performance: [Rating]
+        Performance Ratings (out of 10):
+        - Communication: [Rating]
+        - Technical Knowledge: [Rating]
+        - Client Rapport: [Rating]
+        - Overall Performance: [Rating]
 
-Conclusion:
-[Final thoughts and summary]
-
+        Conclusion:
+        [Final thoughts and summary]
 
         Evaluator Agent:
         """
@@ -902,6 +943,18 @@ Conclusion:
             st.subheader("Chat Controls")
             st.session_state.show_mentor = st.checkbox("Show Mentor Advice", value=st.session_state.show_mentor)
             
+            st.subheader("Agent Guidelines")
+            use_custom_guidelines = st.checkbox("Use Custom Guidelines from File")
+            
+            if use_custom_guidelines:
+                uploaded_file = st.file_uploader("Upload guidelines file", type=["txt"])
+                if uploaded_file is not None:
+                    custom_guidelines = uploaded_file.getvalue().decode("utf-8")
+                else:
+                    custom_guidelines = None
+            else:
+                custom_guidelines = None
+
             if st.button("Reset Conversation", key="reset_btn"):
                 st.session_state.messages = []
                 st.session_state.chat_started = False
@@ -954,24 +1007,30 @@ Conclusion:
                 with chat_container.chat_message("mentor"):
                     mentor_placeholder = st.empty()
                     with st.spinner("Mentor is analyzing..."):
-                        mentor_advice = get_mentor_advice(st.session_state.messages)
+                        mentor_advice = get_mentor_advice(st.session_state.messages, custom_guidelines)
                     
                     # Display the header
                     st.markdown("**Mentor Agent:**")
                     
-                    # Check if mentor_advice contains bullet points
-                    if '•' in mentor_advice:
-                        # Split the advice into bullet points
-                        advice_points = mentor_advice.split('•')
+                    # Display each point of advice
+                    advice_points = mentor_advice.split('•')
+                    for point in advice_points[1:]:  # Skip the first split as it's usually empty
+                        lines = point.split('\n')
+                        if lines:
+                            # Display main point
+                            st.markdown(f"• **{lines[0].strip()}**")
+                            
+                            # Display explanation and suggested approach
+                            for line in lines[1:]:
+                                line = line.strip()
+                                if line.startswith('Explanation:'):
+                                    st.markdown(f"  *{line}*")
+                                elif line.startswith('Suggested approach:'):
+                                    st.markdown(f"  **{line}**")
+                                else:
+                                    st.markdown(f"  {line}")
                         
-                        # Display each bullet point
-                        for point in advice_points[1:]:  # Skip the first split as it's usually empty
-                            if point.strip():  # Check if the point is not just whitespace
-                                st.markdown(f"• {point.strip()}")
-                    else:
-                        # If there are no bullet points, display the advice as is
-                        st.markdown(mentor_advice)
-
+                        st.markdown("")
             # Remove this part as it's redundant and causes the error
             # Display the header
             # st.markdown("**Mentor Agent:**")
@@ -1005,7 +1064,7 @@ Conclusion:
         if 'chat_ended' in st.session_state and st.session_state.chat_ended:
             st.subheader("Chat Ended - Evaluator Feedback")
             with st.spinner("Evaluator is reviewing the conversation..."):
-                evaluator_feedback = get_evaluator_feedback(st.session_state.messages)
+                evaluator_feedback = get_evaluator_feedback(st.session_state.messages, custom_guidelines)
             
             # Clean and format the text
             evaluator_feedback = clean_and_format_text(evaluator_feedback)
@@ -1066,8 +1125,8 @@ with st.sidebar:
             
     selected = option_menu(
         menu_title="TheoremLabs",
-        options=["RolePlay", "RoleBuilder", "Scenario Challenge"],  # Added "Scenario Challenge"
-        icons=["play-circle", "person-plus", "list-task"],  # Choose an appropriate icon
+        options=["RolePlay", "RoleBuilder", "Scenario Challenge", "Test Mode", "Progress Dashboard"],
+        icons=["play-circle", "person-plus", "list-task", "speedometer2", "graph-up"],
         default_index=0,
     )
 
@@ -1081,15 +1140,24 @@ if selected == "RolePlay":
         client_personas()
 elif selected == "RoleBuilder":
     st.title("Create and Manage Personas")
-    tab1, tab2 = st.tabs(["Create New Persona", "View Existing Personas"])
-    
+    tab1, tab2, tab3 = st.tabs(["Create New Persona", "AI Create Persona", "View Existing Personas"])
+
     with tab1:
         create_persona_form()
-    
+
     with tab2:
+        ai_create_persona_form()
+
+    with tab3:
         display_personas()
 elif selected == "Scenario Challenge":
-    scenario_challenge.scenario_challenge()  # Call the Scenario/Challenge feature
+    scenario_challenge.scenario_challenge()
+elif selected == "Test Mode":
+    test_manager = get_test_manager()
+    test_manager.run_test_mode()
+elif selected == "Progress Dashboard":
+    test_manager = get_test_manager()
+    test_manager.display_dashboard()
 
 # Close the database connection
 conn.close()

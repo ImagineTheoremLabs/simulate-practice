@@ -1,0 +1,128 @@
+/* styles.css */
+
+/* ================================
+   1. Global Styles
+   ================================ */
+
+/* Set the overall font and background color for the app */
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #f0f2f6; /* Light text color for readability */
+    background-color: #1e1e1e; /* Dark background */
+    padding: 20px; /* Add some padding around the content */
+}
+
+/* ================================
+   2. Scenario Card Styles
+   ================================ */
+
+/* Container for each scenario card */
+.scenario-card {
+    background-color: #000000; /* Solid black background */
+    padding: 25px; /* Inner padding for content */
+    margin: 20px 0; /* Vertical spacing between cards */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Initial shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    color: #f0f2f6; /* Light text color */
+    width: 100%; /* Ensure the card takes full width of its container */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Hover effect for scenario cards */
+.scenario-card:hover {
+    transform: translateY(-10px); /* Lift the card slightly */
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
+}
+
+/* ================================
+   3. Scenario Title Styles
+   ================================ */
+
+/* Title within each scenario card */
+.scenario-title {
+    color: #00bfff; /* Bright blue color for titles */
+    font-weight: 800; /* Bold text */
+    font-size: 22px; /* Larger font size for emphasis */
+    margin-bottom: 10px; /* Spacing below the title */
+}
+
+/* ================================
+   4. Scenario Description Styles
+   ================================ */
+
+/* Description text within each scenario card */
+.scenario-description {
+    color: #d3d3d3; /* Light gray color for descriptions */
+    font-size: 16px; /* Standard font size */
+    margin-bottom: 15px; /* Spacing below the description */
+}
+
+/* ================================
+   5. Button Styles
+   ================================ */
+
+/* Style for all buttons within the app */
+.submit-btn {
+    background-color: #1e90ff; /* Dodger blue background */
+    color: white; /* White text color */
+    padding: 10px 20px; /* Vertical and horizontal padding */
+    text-align: center; /* Center the text */
+    font-size: 16px; /* Standard font size */
+    margin: 10px 0; /* Vertical spacing above and below the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 8px; /* Rounded corners */
+    border: none; /* Remove default border */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Smooth transitions */
+    width: 100%; /* Make button full width of its container */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Hover effect for buttons */
+.submit-btn:hover {
+    background-color: #1c86ee; /* Slightly darker blue on hover */
+    transform: scale(1.05); /* Slightly enlarge the button */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+}
+
+/* Active state for buttons */
+.submit-btn:active {
+    transform: scale(0.95); /* Slightly shrink the button */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+}
+
+/* ================================
+   6. Feedback Container Styles
+   ================================ */
+
+/* Container for displaying feedback */
+.feedback-container {
+    background-color: #333333; /* Dark gray background */
+    padding: 15px; /* Inner padding */
+    border-radius: 8px; /* Rounded corners */
+    color: #e0e0e0; /* Light gray text color */
+    font-size: 16px; /* Standard font size */
+    line-height: 1.5; /* Comfortable line spacing */
+}
+
+/* ================================
+   7. Button Group Alignment
+   ================================ */
+
+/* Container to align buttons side by side */
+.button-group {
+    display: flex; /* Use flexbox for alignment */
+    gap: 15px; /* Spacing between buttons */
+    margin-top: 15px; /* Spacing above the button group */
+}
+
+/* ================================
+   8. Sidebar Image Spacing
+   ================================ */
+
+/* Adjust spacing for images in the sidebar */
+[data-testid="stSidebar"] [data-testid="stImage"] {
+    margin-bottom: 50px; /* Add space below sidebar images */
+}
+
